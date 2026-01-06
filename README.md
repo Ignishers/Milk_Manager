@@ -37,7 +37,7 @@ MilkManager2 is a comprehensive Android application designed to streamline the d
 
 1.  **Clone the Repository**:
     ```bash
-    git clone https://github.com/yourusername/MilkManager2.git
+    git clone https://github.com/Ignishers/Milk_Manager.git
     ```
 2.  **Open in Android Studio**:
     - Launch Android Studio.
