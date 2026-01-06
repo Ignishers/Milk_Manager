@@ -13,3 +13,15 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Release outputs
+*.apk
+*.aab
+app/release/
+app/build/
+
+# Baseline profile generated files
+*.dm
+
+# Metadata
+output-metadata.json
