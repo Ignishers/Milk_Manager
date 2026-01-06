@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/background_light">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:title="Sales Report"
+            app:titleTextColor="@color/on_primary"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
+            app:navigationIconTint="@color/on_primary"
+            app:menu="@menu/report_menu"/>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            app:tabTextColor="#B3FFFFFF"
+            app:tabSelectedTextColor="@color/on_primary"
+            app:tabIndicatorColor="@color/on_primary">
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Overview"/>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trends"/>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customers"/>
+        </com.google.android.material.tabs.TabLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true"
+        android:padding="16dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- SECTION 1: OVERVIEW -->
+            <LinearLayout
+                android:id="@+id/layoutOverview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <!-- Title Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lifetime Dashboard"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary_light"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Summary Cards Flow (Existing) -->
+                <include layout="@layout/layout_report_cards_inner"/>
+                
+                <View
+                     android:layout_width="match_parent"
+                     android:layout_height="1dp"
+                     android:background="#E0E0E0"
+                     android:layout_marginTop="16dp"
+                     android:layout_marginBottom="16dp"/>
+
+                <!-- Monthly Sales List (Existing) -->
+                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Monthly Breakdown"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary_light"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerReportYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="#F5F5F5">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Month" android:textStyle="bold"/>
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="end" android:text="Milk" android:textStyle="bold"/>
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2" android:gravity="end" android:text="Sales" android:textStyle="bold"/>
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2" android:gravity="end" android:text="Received" android:textStyle="bold"/>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMonthlyReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_report_month"/>
+                    
+            </LinearLayout>
+
+            <!-- SECTION 2: TRENDS (GRAPHS) -->
+            <LinearLayout
+                android:id="@+id/layoutTrends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                
+                <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Yearly Revenue Trend"
+                     android:textSize="18sp"
+                     android:textStyle="bold"
+                     android:layout_marginBottom="16dp"/>
+                     
+                <!-- Bar Chart Custom View -->
+                <com.ignishers.milkmanager2.views.SimpleBarView
+                    android:id="@+id/chartYearlyTrend"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:background="#F8FAFC"
+                    android:layout_marginBottom="24dp"/>
+                    
+                <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Monthly Sales (This Year)"
+                     android:textSize="18sp"
+                     android:textStyle="bold"
+                     android:layout_marginBottom="16dp"/>
+                     
+                <!-- Bar Chart Custom View -->
+                 <com.ignishers.milkmanager2.views.SimpleBarView
+                    android:id="@+id/chartMonthlyTrend"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:background="#F8FAFC"/>
+
+            </LinearLayout>
+
+            <!-- SECTION 3: CUSTOMERS -->
+            <LinearLayout
+                android:id="@+id/layoutCustomers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Top 5 Customers (Revenue)"
+                     android:textSize="18sp"
+                     android:textStyle="bold"
+                     android:layout_marginBottom="16dp"/>
+
+                <!-- Pie Chart Custom View -->
+                 <com.ignishers.milkmanager2.views.SimplePieView
+                    android:id="@+id/chartCustomerPie"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp"/>
+                    
+                 <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:text="* Legend: Top Customers by total spent"
+                     android:textSize="12sp"
+                     android:gravity="center"
+                     android:textColor="@color/text_secondary_light"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- FAB for Download -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabDownloadPdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:text="Export PDF"
+        app:icon="@drawable/ic_download_24"
+        android:backgroundTint="@color/primary"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
+    android:background="@drawable/bottom_sheet_bg">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manual Entry"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Date Selection -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Date"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Unit Selection (ChipGroup) -->
+    <TextView
+        android:id="@+id/tvUnitLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Entry Type"
+        android:textSize="14sp"
+        android:textColor="#757575"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilDate" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupUnit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        app:layout_constraintTop_toBottomOf="@id/tvUnitLabel">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipLitre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Litres (L)"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:checked="true"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipMl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Millilitres (ml)"
+            style="@style/Widget.Material3.Chip.Filter" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipRupees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rupees (₹)"
+            style="@style/Widget.Material3.Chip.Filter" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- Value Input -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Enter Quantity"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        app:suffixText="L"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupUnit">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+    
+    <TextView
+        android:id="@+id/tvPreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Preview: 1.0 L = ₹ 60"
+        android:textSize="14sp"
+        android:textColor="@color/primary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilValue" />
+
+
+    <!-- Submit Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Add Entry"
+        android:paddingVertical="12dp"
+        app:cornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvPreview" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

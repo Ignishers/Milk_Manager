@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================== -->
+    <!-- BRAND COLORS (Primary - Indigo Series)         -->
+    <!-- Use for App Bar, Floating Action Buttons, etc. -->
+    <!-- ============================================== -->
+    <color name="primary_light">#6366F1</color> <!-- Indigo 500 -->
+    <color name="primary">#4F46E5</color>  <!-- Indigo 600 (Main Brand Color) -->
+    <color name="primary_dark">#3730A3</color>  <!-- Indigo 800 -->
+
+    <!-- Text/Icons that sit ON TOP of Primary Color -->
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- ============================================== -->
+    <!-- ACCENT COLORS (Secondary - Teal Series)        -->
+    <!-- Use for switches, selection controls, highlights-->
+    <!-- ============================================== -->
+    <color name="secondary_light">#2DD4BF</color> <!-- Teal 400 -->
+    <color name="secondary">#14B8A6</color>  <!-- Teal 500 -->
+    <color name="secondary_dark">#0F766E</color>  <!-- Teal 700 -->
+
+    <!-- Text/Icons that sit ON TOP of Secondary Color -->
+    <color name="on_secondary">#FFFFFF</color>
+
+    <!-- ============================================== -->
+    <!-- BACKGROUNDS & SURFACES (The "Clean" Look)      -->
+    <!-- ============================================== -->
+
+    <!-- LIGHT MODE BACKGROUNDS -->
+    <!-- A very subtle off-white blue-grey for a premium feel -->
+    <color name="background_light">#F8FAFC</color>
+    <!-- Pure white for Cards/Dialogs/BottomSheets -->
+    <color name="surface_light">#FFFFFF</color>
+
+    <!-- DARK MODE BACKGROUNDS -->
+    <!-- A deep slate blue, much richer than pitch black -->
+    <color name="background_dark">#0F172A</color>
+    <!-- Slightly lighter slate for Cards in dark mode -->
+    <color name="surface_dark">#1E293B</color>
+
+    <!-- ============================================== -->
+    <!-- TEXT & TYPOGRAPHY COLORS                       -->
+    <!-- ============================================== -->
+
+    <!-- Light Mode Text -->
+    <color name="text_primary_light">#1E293B</color>   <!-- High Emphasis -->
+    <color name="text_secondary_light">#64748B</color> <!-- Medium Emphasis (Subtitles) -->
+
+    <!-- Dark Mode Text -->
+    <color name="text_primary_dark">#F1F5F9</color>    <!-- High Emphasis -->
+    <color name="text_secondary_dark">#94A3B8</color>  <!-- Medium Emphasis (Subtitles) -->
+
+    <!-- ============================================== -->
+    <!-- FUNCTIONAL COLORS                              -->
+    <!-- ============================================== -->
+    <color name="error_red">#EF4444</color>
+    <color name="success_green">#10B981</color>
+    <color name="warning_amber">#F59E0B</color>
+
+    <!-- Opacity layers (useful for ripples or disabled states) -->
+    <color name="overlay_light">#1A000000</color>
+    <color name="overlay_dark">#1AFFFFFF</color>
+
+</resources>

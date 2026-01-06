@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Milk Manager 2</string>
+    <string name="sales_record">Sales Record</string>
+    <string name="settings">Setting</string>
+    <string name="add_customer">Add Customer</string>
+    <string name="dashboard">DashBoard</string>
+    <string name="add_group">Add Group</string>
+    <string name="due">Due: </string>
+    <string name="number">Number: </string>
+    <string name="name">Name: </string>
+    <string name="month_dues">Month Dues:</string>
+    <string name="add_night_milk">Add Night Milk</string>
+    <string name="add_day_milk">Add Day Milk</string>
+    <string name="date">Date:</string>
+    <string name="milk_price">Milk Price</string>
+</resources>
