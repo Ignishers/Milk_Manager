@@ -3,10 +3,8 @@ package com.ignishers.milkmanager2;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.Stack;
 
@@ -31,6 +29,10 @@ import com.ignishers.milkmanager2.model.RouteGroup;
 import java.util.List;
 
 
+
+/*
+*   This is the final version of offline app for Milk Manager
+ */
 public class MainActivity extends AppCompatActivity implements AddCustomerDialogFragment.OnCustomerCreatedListener {
 
 
