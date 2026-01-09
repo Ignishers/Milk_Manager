@@ -8,8 +8,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.ignishers.milkmanager2.databinding.FragmentAddCustomerDialogListDialogBinding;
 import com.ignishers.milkmanager2.utils.SimpleTextWatcher;
 
 /**

@@ -1,7 +1,6 @@
 package com.ignishers.milkmanager2.model;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
