@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:statusBarForeground="@color/primary_light">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        style="@style/Widget.Material3.Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        app:navigationIcon="@drawable/three_dots"
+        app:title="@string/dashboard"
+        app:titleCentered="true"
+        app:titleTextColor="@color/on_secondary" >
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_margin="4dp"
+            android:clickable="true"
+            android:contentDescription="@string/add_group"
+            app:backgroundTint="@color/primary_light"
+            app:fabCustomSize="50dp"
+            app:srcCompat="@android:drawable/ic_input_add"
+            app:tint="@color/on_secondary" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+        <TextView
+            android:id="@+id/textPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            android:singleLine="true"
+            android:ellipsize="start"
+            android:text="root"
+            android:textColor="@color/on_secondary"
+            android:textStyle="italic"
+            android:background="@color/primary" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:scrollbars="vertical" />
+
+
+    <!-- NEW: The Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_customer"
+        app:backgroundTint="@color/secondary"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/on_secondary" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:text="@string/ignishers"
+        android:textColor="@color/primary"
+        android:letterSpacing="0.4"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:alpha="0.25" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

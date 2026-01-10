@@ -60,6 +60,12 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
 
         // Setup RecyclerView
         rvTodayEntries.setLayoutManager(new LinearLayoutManager(this));
+        
+        // Dynamic Animation
+        int resId = R.anim.layout_animation_fall_down;
+        android.view.animation.LayoutAnimationController animation = android.view.animation.AnimationUtils.loadLayoutAnimation(this, resId);
+        rvTodayEntries.setLayoutAnimation(animation);
+        
         adapter = new DailyTransactionAdapter(this::showDeleteDialog);
         rvTodayEntries.setAdapter(adapter);
 

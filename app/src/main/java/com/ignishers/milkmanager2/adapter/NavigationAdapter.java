@@ -105,6 +105,13 @@ public class NavigationAdapter
         }
 
         void bind(Customer c) {
+            if (c.isVisited) {
+                name.setAlpha(0.5f);
+                name.setTypeface(null, android.graphics.Typeface.NORMAL);
+            } else {
+                name.setAlpha(1.0f);
+                name.setTypeface(null, android.graphics.Typeface.BOLD);
+            }
             name.setText(c.name);
             itemView.setOnClickListener(v ->
                     listener.onCustomerClick(c.id));

@@ -9,6 +9,7 @@ public class Customer {
     public String routeGroupName;
     public double defaultQuantity;
     public double currentDue;
+    public boolean isVisited = false;
 
 
     public Customer(long id, String name, String mobile, long routeGroupId) {

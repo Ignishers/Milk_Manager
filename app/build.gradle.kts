@@ -13,7 +13,7 @@ android {
         minSdk = 30
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +33,15 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            val output = this as? com.android.build.gradle.api.ApkVariantOutput
+            if (output != null && buildType.name == "release") {
+                output.outputFileName = "MilkManager2.apk"
+            }
+        }
     }
 }
 

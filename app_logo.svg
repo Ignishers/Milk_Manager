@@ -1,0 +1,36 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" /> <!-- Indigo 600 -->
+            <stop offset="100%" style="stop-color:#312E81;stop-opacity:1" /> <!-- Indigo 900 -->
+        </linearGradient>
+        <filter id="materialShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.25"/>
+        </filter>
+    </defs>
+
+    <!-- Material Squircle Background -->
+    <rect x="32" y="32" width="448" height="448" rx="144" fill="url(#bgGradient)" />
+
+    <!-- Material "M" constructed from Geometric Shapes -->
+    <g filter="url(#materialShadow)">
+        <!-- Left Pillar -->
+        <rect x="112" y="128" width="80" height="256" rx="40" fill="#FFFFFF"/>
+        
+        <!-- Right Pillar -->
+        <rect x="320" y="128" width="80" height="256" rx="40" fill="#FFFFFF"/>
+        
+        <!-- Center V (Draped) -->
+        <!-- This connects the two pillars seamlessly -->
+        <path d="M152 160 
+                 Q 256 300, 360 160
+                 L 360 210
+                 Q 256 380, 152 210
+                 Z" fill="#FFFFFF"/>
+                 
+        <!-- usage of Teal (Ignishers Accent) for the 'Hidden' element -->
+        <!-- A floating diamond/spark in the top center negative space -->
+        <!-- It represents the 'Ignishers' spark/shield idea abstractly -->
+        <rect x="236" y="100" width="40" height="40" rx="8" transform="rotate(45 256 120)" fill="#2DD4BF"/>
+    </g>
+</svg>

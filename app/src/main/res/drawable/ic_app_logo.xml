@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Background -->
+    <path
+        android:pathData="M176,32 H336 A144,144 0 0 1 480,176 V336 A144,144 0 0 1 336,480 H176 A144,144 0 0 1 32,336 V176 A144,144 0 0 1 176,32 Z">
+        <aapt:attr name="android:fillColor">
+             <gradient
+                android:startX="32"
+                android:startY="32"
+                android:endX="480"
+                android:endY="480"
+                android:type="linear">
+                <item android:color="#FF4F46E5" android:offset="0.0" />
+                <item android:color="#FF312E81" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    
+    <!-- Material M Group -->
+    <group>
+         <!-- Left Pillar -->
+         <path 
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M112,168 a40,40 0 0 1 80,0 v176 a40,40 0 0 1 -80,0 z" />
+
+        <!-- Right Pillar -->
+        <path 
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M320,168 a40,40 0 0 1 80,0 v176 a40,40 0 0 1 -80,0 z" />
+
+        <!-- Center Drape -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M152 160 Q 256 300, 360 160 L 360 210 Q 256 380, 152 210 Z"/>
+
+        <!-- Spark Accent -->
+        <path
+            android:fillColor="#FF2DD4BF"
+            android:pathData="M256,92 L284,120 L256,148 L228,120 Z"/>
+    </group>
+</vector>

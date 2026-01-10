@@ -22,33 +22,44 @@ public class CustomerDAO {
     // Pass null for Root level
     public List<Customer> getCustomersByGroup(Long groupId) {
         List<Customer> list = new ArrayList<>();
-        String selection;
+        String today = java.time.LocalDate.now().toString(); // Requires API 26+
+
+        String sql = "SELECT c.customer_id, c.customer_name, c.customer_mobile, c.route_id_fk, c.default_quantity, c.customer_due_balance, " +
+                     "(CASE WHEN t.transaction_id IS NOT NULL THEN 1 ELSE 0 END) as is_visited " +
+                     "FROM " + DBHelper.CUSTOMER_TABLE + " c " +
+                     "LEFT JOIN " + DBHelper.MILK_TRANSACTION_TABLE + " t " +
+                     "ON c." + DBHelper.COL_CUSTOMER_ID + " = t." + DBHelper.COL_TRANS_CUSTOMER_ID_FK + 
+                     " AND t." + DBHelper.COL_TRANS_DATE + " = ? ";
+
         String[] args;
 
-        if (groupId == null || groupId == 0) { // Treating 0 as null for backward compat or if passed 0
-            // For Root: Fetch where route_id is NULL (preferred) OR 0 (legacy/forced)
-            selection = "route_id_fk IS NULL OR route_id_fk = 0";
-            args = null;
+        if (groupId == null || groupId == 0) {
+            sql += "WHERE (c.route_id_fk IS NULL OR c.route_id_fk = 0)";
+            args = new String[]{today};
         } else {
-            selection = "route_id_fk = ?";
-            args = new String[]{String.valueOf(groupId)};
+            sql += "WHERE c.route_id_fk = ?";
+            args = new String[]{today, String.valueOf(groupId)};
         }
 
-        Cursor c = db.query(
-                "customer",
-                new String[]{"customer_id", "customer_name", "customer_mobile", "route_id_fk"},
-                selection,
-                args,
-                null, null, null
-        );
+        // Group by customer to avoid duplicates (if multiple transactions today)
+        sql += " GROUP BY c.customer_id";
+
+        Cursor c = db.rawQuery(sql, args);
 
         while (c.moveToNext()) {
-            list.add(new Customer(
+            Customer customer = new Customer(
                     c.getLong(0),
                     c.getString(1),
                     c.getString(2),
-                    c.getLong(3)
-            ));
+                    c.getDouble(4),
+                    c.getDouble(5)
+            );
+            customer.routeGroupId = c.getLong(3);
+            
+            // Set Visited Flag
+            customer.isVisited = (c.getInt(6) == 1);
+            
+            list.add(customer);
         }
         c.close();
         return list;
