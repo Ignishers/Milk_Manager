@@ -62,3 +62,7 @@ MilkManager2 is a comprehensive Android application designed to streamline the d
 ## 🤝 Contribution
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+[![Stargazers repo roster for @Ignishers/Milk_Manager](https://reporoster.com/stars/dark/Ignishers/Milk_Manager)](https://github.com/Ignishers/Milk_Manager/stargazers)
+
+[![Forkers repo roster for @Ignishers/Milk_Manager](https://reporoster.com/forks/dark/Ignishers/Milk_Manager)](https://github.com/Ignishers/Milk_Manager/network/members)
