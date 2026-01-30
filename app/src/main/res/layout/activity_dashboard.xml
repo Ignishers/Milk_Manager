@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary"
-        app:navigationIcon="@drawable/three_dots"
+        app:navigationIcon="@drawable/vec_menu_dots"
         app:title="@string/dashboard"
         app:titleCentered="true"
         app:titleTextColor="@color/on_secondary" >
@@ -61,6 +61,21 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:scrollbars="vertical" />
 
+
+    <!-- NEW: Paste Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabPaste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="88dp"
+        android:clickable="true"
+        android:contentDescription="Paste Customer"
+        android:visibility="gone"
+        app:backgroundTint="#FF9800"
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        app:tint="@color/on_secondary" />
 
     <!-- NEW: The Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton

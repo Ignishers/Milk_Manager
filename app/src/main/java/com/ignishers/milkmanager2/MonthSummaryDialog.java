@@ -150,7 +150,7 @@ public class MonthSummaryDialog extends DialogFragment {
     }
 
     private void loadTableData(TableLayout table) {
-        table.removeAllViews(); // Clear existing rows
+        table.removeAllViews(); // Clear existing rows (Header is in XML now)
         
         String monthStr = String.format(Locale.getDefault(), "%02d", currentMonth);
         String yearStr = String.valueOf(currentYear);
@@ -173,39 +173,65 @@ public class MonthSummaryDialog extends DialogFragment {
                 
                 // Aggregate
                 // Skip Payments from Milk Summary
-                if (t.getSession().startsWith("Payment")) continue;
+                if (t.getSession().startsWith("Payment")) {
+                    d.paymentAmt += t.getAmount();
+                    continue;
+                }
                 
-                if ("Evening".equalsIgnoreCase(t.getSession())) {
-                    d.eveQty += t.getQuantity();
-                    d.eveAmt += t.getAmount();
+                String type = t.getMilkType();
+                if (type == null) type = "Regular"; // Default legacy
+                
+                if ("Extra".equalsIgnoreCase(type)) {
+                    d.extraQty += t.getQuantity();
+                    d.extraAmt += t.getAmount();
                 } else {
-                    // Morning OR Manual (Assuming Morning/Manual goes to Day col)
-                    d.morQty += t.getQuantity();
-                    d.morAmt += t.getAmount();
+                    // Regular: Split by Session using TIME LOGIC
+                    boolean isMorning = false;
+                    
+                    // Attempt to parse timestamp
+                    String timestamp = t.getTimestamp();
+                    if (timestamp != null && !timestamp.isEmpty()) {
+                         try {
+                             java.time.LocalTime timeObj;
+                             if (timestamp.contains("T")) {
+                                 String timePart = timestamp.substring(timestamp.indexOf("T") + 1);
+                                 if (timePart.contains(".")) {
+                                     timePart = timePart.substring(0, timePart.indexOf("."));
+                                 }
+                                 timeObj = java.time.LocalTime.parse(timePart);
+                             } else {
+                                 // HH:mm:ss
+                                 timeObj = java.time.LocalTime.parse(timestamp);
+                             }
+                             
+                             // 2 AM to 3 PM is Morning
+                             int hour = timeObj.getHour();
+                             if (hour >= 2 && hour < 15) {
+                                 isMorning = true;
+                             } else {
+                                 isMorning = false;
+                             }
+                             
+                         } catch (Exception e) {
+                             // Fallback to stored session string
+                             isMorning = "Morning".equalsIgnoreCase(t.getSession());
+                         }
+                    } else {
+                        // No timestamp, use stored session
+                        isMorning = "Morning".equalsIgnoreCase(t.getSession());
+                    }
+
+                    if (isMorning) {
+                        d.morQty += t.getQuantity();
+                        d.morAmt += t.getAmount();
+                    } else {
+                        d.eveQty += t.getQuantity();
+                        d.eveAmt += t.getAmount();
+                    }
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-        }
-
-        // Fetch "Payment" entries from Transactions
-        for (DailyTransaction t : transactions) {
-            try {
-                if (!t.getSession().startsWith("Payment")) continue;
-                
-                LocalDate date = LocalDate.parse(t.getDate());
-                int day = date.getDayOfMonth();
-                
-                if (!dataMap.containsKey(day)) {
-                     dataMap.put(day, new DayData());
-                }
-                
-                // Assuming amount is stored in Transaction Amount field
-                dataMap.get(day).paymentAmt += t.getAmount();
-                
-            } catch (Exception e) {
-                 e.printStackTrace();
             }
         }
 
@@ -219,74 +245,85 @@ public class MonthSummaryDialog extends DialogFragment {
             row.setPadding(0, 16, 0, 16);
             if (i % 2 == 0) row.setBackgroundColor(Color.parseColor("#F9F9F9"));
 
-            // Date Col
-            TextView tvDate = createTextView(String.valueOf(i));
+            // Date Col (Weight 0.8)
+            TextView tvDate = createTextView(String.valueOf(i), 0.8f);
             
-            // Morning Col
+            // Morning Col (Weight 1)
             DayData data = dataMap.get(i);
             String morText = "-";
             String eveText = "-";
+            String extraText = "-";
             
             if (data != null) {
                 if (data.morQty > 0 || data.morAmt > 0) {
-                     morText = String.format(Locale.getDefault(), "%.3f L\n₹ %.2f", data.morQty, data.morAmt);
+                     morText = String.format(Locale.getDefault(), "%.2fL\n₹%.0f", data.morQty, data.morAmt);
                 }
                 if (data.eveQty > 0 || data.eveAmt > 0) {
-                     eveText = String.format(Locale.getDefault(), "%.3f L\n₹ %.2f", data.eveQty, data.eveAmt);
+                     eveText = String.format(Locale.getDefault(), "%.2fL\n₹%.0f", data.eveQty, data.eveAmt);
+                }
+                if (data.extraQty > 0 || data.extraAmt > 0) {
+                     extraText = String.format(Locale.getDefault(), "%.2fL\n₹%.0f", data.extraQty, data.extraAmt);
                 }
             }
 
-            TextView tvMor = createTextView(morText);
-            TextView tvEve = createTextView(eveText);
+            TextView tvMor = createTextView(morText, 1f);
+            TextView tvEve = createTextView(eveText, 1f);
+            TextView tvExtra = createTextView(extraText, 1f);
             
-            // Payment Col
+            // Payment Col (Weight 1)
             String payText = "-";
             if (data != null && data.paymentAmt > 0) {
-                 payText = String.format(Locale.getDefault(), "₹ %.2f", data.paymentAmt);
+                 payText = String.format(Locale.getDefault(), "₹ %.0f", data.paymentAmt);
             }
-            TextView tvPay = createTextView(payText);
+            TextView tvPay = createTextView(payText, 1f);
             tvPay.setTextColor(Color.parseColor("#4CAF50")); // Green color for payment
 
             row.addView(tvDate);
             row.addView(tvMor);
             row.addView(tvEve);
+            row.addView(tvExtra);
             row.addView(tvPay);
 
             table.addView(row);
         }
 
         // Display Totals
-        double totalMilk = 0;
+        double totalMorMilk = 0, totalEveMilk = 0, totalExtraMilk = 0;
         double totalAmount = 0;
         double totalPayment = 0;
 
         for (DayData d : dataMap.values()) {
-            totalMilk += d.morQty + d.eveQty;
-            totalAmount += d.morAmt + d.eveAmt;
+            totalMorMilk += d.morQty;
+            totalEveMilk += d.eveQty;
+            totalExtraMilk += d.extraQty;
+            totalAmount += d.morAmt + d.eveAmt + d.extraAmt;
             totalPayment += d.paymentAmt;
         }
         
         TextView tvTotal = getView().findViewById(R.id.tvTotalSummary);
         if (tvTotal != null) {
             String summary = String.format(Locale.getDefault(), 
-                "Milk: %.2f L  |  Amt: ₹ %.2f\nPaid: ₹ %.2f", 
-                totalMilk, totalAmount, totalPayment);
+                "Morn: %.2f | Eve: %.2f | Ext: %.2f\nTotal Rev: ₹ %.0f | Paid: ₹ %.0f", 
+                totalMorMilk, totalEveMilk, totalExtraMilk, totalAmount, totalPayment);
             tvTotal.setText(summary);
         }
     }
-
-    private TextView createTextView(String text) {
+    
+    // Helper to create weighted TextView
+    private TextView createTextView(String text, float weight) {
         TextView tv = new TextView(requireContext());
         tv.setText(text);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.BLACK);
-        tv.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        tv.setTextSize(12); // Slightly smaller for dense info
+        tv.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight));
         return tv;
     }
 
     private static class DayData {
         double morQty, morAmt;
         double eveQty, eveAmt;
+        double extraQty, extraAmt;
         double paymentAmt;
     }
 }

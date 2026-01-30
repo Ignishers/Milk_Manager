@@ -269,13 +269,33 @@ public class DashboardActivity extends AppCompatActivity implements AddCustomerD
 
     ///  Toolbar Important Functions
     private void showNavigationDrawer(View anchorView) {
-        // Animate the icon to opened state (90 degrees)
-        anchorView.animate().rotation(90f).setDuration(200).start();
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        
+        // 1. Play Dots -> Lines
+        toolbar.setNavigationIcon(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.avd_dots_to_lines));
+        android.graphics.drawable.Drawable icon = toolbar.getNavigationIcon();
+        if (icon instanceof android.graphics.drawable.Animatable) {
+            ((android.graphics.drawable.Animatable) icon).start();
+        }
+        
+        // 2. Snap to Lines (Hamburger) after animation ensures it stays open
+        // (Wait for ~400ms cover animation)
+        toolbar.postDelayed(() -> {
+             toolbar.setNavigationIcon(R.drawable.vec_menu_lines);
+        }, 450);
 
         MainMenuBottomSheet bottomSheet = new MainMenuBottomSheet();
         bottomSheet.setDismissAction(() -> {
-            // Animate back to closed state (0 degrees) when dialog closes
-            anchorView.animate().rotation(0f).setDuration(200).start();
+            // 3. Play Lines -> Dots
+            toolbar.setNavigationIcon(androidx.appcompat.content.res.AppCompatResources.getDrawable(this, R.drawable.avd_lines_to_dots));
+            android.graphics.drawable.Drawable closeIcon = toolbar.getNavigationIcon();
+            if (closeIcon instanceof android.graphics.drawable.Animatable) {
+                ((android.graphics.drawable.Animatable) closeIcon).start();
+            }
+            // 4. Snap back to Dots
+            toolbar.postDelayed(() -> {
+                 toolbar.setNavigationIcon(R.drawable.vec_menu_dots);
+            }, 450);
         });
         
         bottomSheet.setListener(new MainMenuBottomSheet.OnMenuItemClickListener() {
@@ -297,6 +317,7 @@ public class DashboardActivity extends AppCompatActivity implements AddCustomerD
                 Toast.makeText(DashboardActivity.this, "Settings Comming Soon", Toast.LENGTH_SHORT).show();
             }
         });
+        
         bottomSheet.show(getSupportFragmentManager(), "MainMenu");
     }
 ///    Toolbar Function Ended
@@ -309,7 +330,45 @@ public class DashboardActivity extends AppCompatActivity implements AddCustomerD
     protected void onResume() {
         super.onResume();
         refresh();/// Ensures updated dues appear immediately
+        checkClipboard();
     }
+    
+    // Check if we need to show Paste Button
+    private void checkClipboard() {
+        if (com.ignishers.milkmanager2.utils.CustomerClipboard.hasClip()) {
+             FloatingActionButton fabPaste = findViewById(R.id.fabPaste);
+             fabPaste.setVisibility(View.VISIBLE);
+             
+             String custName = com.ignishers.milkmanager2.utils.CustomerClipboard.getCustomerName();
+             fabPaste.setOnClickListener(v -> showPasteDialog(custName));
+        } else {
+             FloatingActionButton fabPaste = findViewById(R.id.fabPaste);
+             if (fabPaste != null) fabPaste.setVisibility(View.GONE);
+        }
+    }
+    
+    private void showPasteDialog(String custName) {
+         new AlertDialog.Builder(this)
+             .setTitle("Move Customer Here?")
+             .setMessage("Move '" + custName + "' to current folder?")
+             .setPositiveButton("Paste", (dialog, which) -> {
+                 Long currentGroupId = navManager.getCurrentGroup();
+                 // If null, we are at root (0 or null in DB, depending on impl)
+                 // CustomerDAO treats 0 or NULL strictly. Let's send 0 if root.
+                 long targetRouteId = (currentGroupId == null) ? 0 : currentGroupId;
+                 
+                 customerDAO.updateCustomerRoute(com.ignishers.milkmanager2.utils.CustomerClipboard.getCustomerId(), targetRouteId);
+                 
+                 com.ignishers.milkmanager2.utils.CustomerClipboard.clear();
+                 checkClipboard(); // Hide FAB
+                 loadCurrentLevel(); // Refresh List
+                 
+                 Toast.makeText(this, "Customer Moved Successfully", Toast.LENGTH_SHORT).show();
+             })
+             .setNegativeButton("Cancel", null)
+             .show();
+    }
+
     private void refresh() {
         loadCurrentLevel();
         if (adapter != null) {

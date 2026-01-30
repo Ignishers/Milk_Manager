@@ -61,6 +61,18 @@ public class RouteGroupDAO {
         long result = db.insert("route_group", null, cv);
         return result != -1;
     }
+    // List All Groups (for Selection Dialog)
+    public List<RouteGroup> getAllGroups() {
+        List<RouteGroup> list = new ArrayList<>();
+        // Exclude Root (0) if you don't want them directly in Root, but here we probably want all valid groups
+        Cursor c = db.rawQuery("SELECT * FROM route_group WHERE group_id > 0", null);
+        while (c.moveToNext()) {
+            list.add(new RouteGroup(c.getLong(0), c.getLong(1), c.getString(2)));
+        }
+        c.close();
+        return list;
+    }
+    
     // Ensure Root Route (ID 0) exists for Foreign Key constraints
     public void ensureRootRouteExists() {
         Cursor c = db.rawQuery("SELECT 1 FROM route_group WHERE group_id = 0", null);

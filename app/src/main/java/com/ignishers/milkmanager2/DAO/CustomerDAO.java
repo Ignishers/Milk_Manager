@@ -110,4 +110,16 @@ public class CustomerDAO {
         String sql = "UPDATE customer SET customer_due_balance = customer_due_balance + ? WHERE customer_id = ?";
         db.execSQL(sql, new Object[]{amountToAdd, customerId});
     }
+
+    public void updateCustomerDefaultQty(long customerId, double newQty) {
+        ContentValues cv = new ContentValues();
+        cv.put("default_quantity", newQty);
+        db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
+    }
+
+    public void updateCustomerRoute(long customerId, long newRouteId) {
+        ContentValues cv = new ContentValues();
+        cv.put("route_id_fk", newRouteId);
+        db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
+    }
 }

@@ -1,0 +1,44 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/vec_menu_lines">
+    
+    <!-- Top -->
+    <target android:name="dot_top">
+        <aapt:attr name="android:animation" xmlns:aapt="http://schemas.android.com/aapt">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:valueFrom="M 4,5 L 20,5"
+                android:valueTo="M 11.95,5 L 12.05,5"
+                android:duration="300"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+
+    <!-- Mid -->
+    <target android:name="dot_mid">
+        <aapt:attr name="android:animation" xmlns:aapt="http://schemas.android.com/aapt">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:valueFrom="M 4,12 L 20,12"
+                android:valueTo="M 11.95,12 L 12.05,12"
+                android:duration="300"
+                android:startOffset="50"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+
+    <!-- Bottom -->
+    <target android:name="dot_bottom">
+        <aapt:attr name="android:animation" xmlns:aapt="http://schemas.android.com/aapt">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:valueFrom="M 4,19 L 20,19"
+                android:valueTo="M 11.95,19 L 12.05,19"
+                android:duration="300"
+                android:startOffset="100"
+                android:valueType="pathType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+</animated-vector>

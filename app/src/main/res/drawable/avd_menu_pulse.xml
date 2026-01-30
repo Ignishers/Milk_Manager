@@ -1,0 +1,75 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/vec_menu_dots">
+    
+    <!-- Top Dot -> Line -->
+    <target android:name="group_top">
+        <aapt:attr name="android:animation" xmlns:aapt="http://schemas.android.com/aapt">
+            <set>
+                <!-- Scale Y to stretch into logic -->
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="1.0"
+                    android:valueTo="2.5"
+                    android:duration="200"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/overshoot"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="2.5"
+                    android:valueTo="1.0"
+                    android:startOffset="300"
+                    android:duration="200"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+
+    <!-- Mid Dot -> Line -->
+    <target android:name="group_mid">
+        <aapt:attr name="android:animation" xmlns:aapt="http://schemas.android.com/aapt">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="1.0"
+                    android:valueTo="2.5"
+                    android:startOffset="50"
+                    android:duration="200"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/overshoot"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="2.5"
+                    android:valueTo="1.0"
+                    android:startOffset="350"
+                    android:duration="200"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+
+    <!-- Bottom Dot -> Line -->
+    <target android:name="group_bottom">
+        <aapt:attr name="android:animation" xmlns:aapt="http://schemas.android.com/aapt">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="1.0"
+                    android:valueTo="2.5"
+                    android:startOffset="100"
+                    android:duration="200"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/overshoot"/>
+                 <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="2.5"
+                    android:valueTo="1.0"
+                    android:startOffset="400"
+                    android:duration="200"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

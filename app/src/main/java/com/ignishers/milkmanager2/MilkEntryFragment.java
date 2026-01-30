@@ -79,7 +79,7 @@ public class MilkEntryFragment extends Fragment {
         com.google.android.material.button.MaterialButton manualBtn = view.findViewById(R.id.btnManualEntry);
 
         // Setup Spinner
-        String[] quantities = new String[]{"Add Extra...", "100ml", "250ml", "500ml", "1l", "2l", "10rs", "20rs", "50rs"};
+        String[] quantities = new String[]{"Add Extra...", "250ml", "500ml", "750ml", "1l", "2l", "10rs", "20rs", "50rs"};
         android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,

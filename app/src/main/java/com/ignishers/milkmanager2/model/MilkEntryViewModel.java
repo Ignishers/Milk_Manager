@@ -9,6 +9,7 @@ import com.ignishers.milkmanager2.DAO.DailyTransactionDAO;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -47,7 +48,8 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                 double amount = (quantity * rate);
 
                 String session;
-                if (LocalTime.now().getHour() < 17) {
+                int currentHour = LocalTime.now().getHour();
+                if (currentHour >= 2 && currentHour < 15) {
                     session = "Morning";
                 } else {
                     session = "Evening";
@@ -59,7 +61,9 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                         session,
                         quantity,
                         amount,
-                        LocalTime.now().toString()
+                        LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                        null,
+                        "Regular" // Default Button = Regular
                 );
                 dao.insert(entry);
                 customerDao.updateCustomerDue(customerId, amount);
@@ -71,11 +75,12 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
     public void addManualEntry(long customerId, String dateStr, double quantity, double amount) {
         executor.execute(() -> {
             String session;
-            if (LocalTime.now().getHour() < 17) {
-                // Before 5 PM -> Morning
+            int currentHour = LocalTime.now().getHour();
+            if (currentHour >= 2 && currentHour < 15) {
+                // 2 AM to 3 PM -> Morning
                 session = "Morning";
             } else {
-                // After 5 PM -> Evening
+                // 3 PM to 2 AM -> Evening
                 session = "Evening";
             }
             
@@ -85,7 +90,9 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                     session,
                     quantity,
                     amount,
-                    LocalTime.now().toString()
+                    LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                    null,
+                    "Extra" // Manual Entry = Extra
             );
             dao.insert(entry);
             customerDao.updateCustomerDue(customerId, amount);
@@ -107,7 +114,9 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                         "Evening",
                         quantity,
                         amount,
-                        LocalTime.now().toString()
+                        LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                        null,
+                        "Regular" // Night Entry (Scheduled) = Regular
                 );
                 dao.insert(entry);
                 customerDao.updateCustomerDue(customerId, amount);
@@ -124,7 +133,9 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                     sessionType,
                     quantity,
                     amount,
-                    LocalTime.now().toString()
+                    LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                    null,
+                    "Extra" // Generic Add Entry = Extra (usually from manual flows)
             );
 
             dao.insert(entry);
@@ -141,7 +152,7 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                     "Payment", // Session
                     0.0,
                     amount,
-                    LocalTime.now().toString(),
+                    LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                     method // Payment Mode
             );
             dao.insert(entry);
@@ -201,7 +212,8 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
 
                 // Determine session
                 String session;
-                if (LocalTime.now().getHour() < 17) {
+                int currentHour = LocalTime.now().getHour();
+                if (currentHour >= 2 && currentHour < 15) {
                     session = "Morning"; 
                 } else {
                     session = "Evening";
@@ -213,7 +225,9 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                         session,
                         quantity,
                         amount,
-                        LocalTime.now().toString()
+                        LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                        null,
+                        "Extra" // Quick Entry (Dropdown) = Extra
                 );
                 dao.insert(entry);
                 customerDao.updateCustomerDue(customerId, amount);

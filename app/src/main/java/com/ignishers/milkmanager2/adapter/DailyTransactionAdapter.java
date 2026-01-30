@@ -80,18 +80,40 @@ public class DailyTransactionAdapter extends RecyclerView.Adapter<DailyTransacti
             
             // Format timestamp (Display logic)
             String timestamp = transaction.getTimestamp();
-            if (timestamp != null && timestamp.contains("T")) {
+            if (timestamp != null && !timestamp.isEmpty()) {
                  try {
-                     String timePart = timestamp.substring(timestamp.indexOf("T") + 1);
-                     if (timePart.contains(".")) {
-                         timePart = timePart.substring(0, timePart.indexOf("."));
+                     // Check if it's the old format (full ISO with 'T' and nanos) or new HH:mm:ss
+                     java.time.LocalTime timeObj;
+                     if (timestamp.contains("T")) {
+                         // Fallback for old data: 2023-10-27T10:15:30.123
+                         String timePart = timestamp.substring(timestamp.indexOf("T") + 1);
+                         if (timePart.contains(".")) {
+                             timePart = timePart.substring(0, timePart.indexOf("."));
+                         }
+                         timeObj = java.time.LocalTime.parse(timePart); 
+                     } else {
+                         // New format: HH:mm:ss
+                         timeObj = java.time.LocalTime.parse(timestamp);
                      }
-                     tvTime.setText(timePart);
+                     
+                     // Format to 12-hour AM/PM
+                     java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("hh:mm a");
+                     tvTime.setText(timeObj.format(formatter));
+                     
+                     // Fix Session Display: 2 AM to 3 PM is Morning, else Evening
+                     if (session != null && (session.equalsIgnoreCase("Morning") || session.equalsIgnoreCase("Evening"))) {
+                         if (timeObj.getHour() >= 2 && timeObj.getHour() < 15) {
+                             tvSession.setText("Morning");
+                         } else {
+                             tvSession.setText("Evening");
+                         }
+                     }
+                     
                  } catch (Exception e) {
-                     tvTime.setText(timestamp);
+                     tvTime.setText(timestamp); // Fallback to raw string
                  }
             } else {
-                tvTime.setText(timestamp);
+                tvTime.setText("");
             }
 
             if (session != null && session.startsWith("Payment")) {

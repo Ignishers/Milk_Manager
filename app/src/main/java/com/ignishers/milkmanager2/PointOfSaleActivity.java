@@ -82,6 +82,68 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
         findViewById(R.id.btnPayment).setOnClickListener(v -> {
             PaymentDialog.newInstance(customer.id).show(getSupportFragmentManager(), "PaymentDialog");
         });
+
+        // Setup Toolbar Menu
+        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_point_of_sale, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@androidx.annotation.NonNull android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        } else if (item.getItemId() == R.id.action_edit_default_qty) {
+            showEditDefaultQtyDialog();
+            return true;
+        } else if (item.getItemId() == R.id.action_move_customer) {
+            initiateMoveCustomer();
+            return true;
+        } else if (item.getItemId() == R.id.action_bill) {
+            android.widget.Toast.makeText(this, "Bill feature coming soon!", android.widget.Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showEditDefaultQtyDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Update Default Quantity");
+
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        input.setText(String.valueOf(customer.defaultQuantity));
+        builder.setView(input);
+
+        builder.setPositiveButton("Update", (dialog, which) -> {
+            String qtyStr = input.getText().toString();
+            try {
+                double newQty = Double.parseDouble(qtyStr);
+                customerDAO.updateCustomerDefaultQty(customer.id, newQty);
+                customer.defaultQuantity = newQty; // Update local obj
+                android.widget.Toast.makeText(this, "Default Quantity Updated", android.widget.Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e) {
+                android.widget.Toast.makeText(this, "Invalid Quantity", android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+    
+    private void initiateMoveCustomer() {
+        com.ignishers.milkmanager2.utils.CustomerClipboard.copy(customer.id, customer.name);
+        android.widget.Toast.makeText(this, "Customer Cut! Navigate to new folder and Click Paste.", android.widget.Toast.LENGTH_LONG).show();
+        finish(); // Return to dashboard to navigate
     }
     
     private void setupSwipeNavigation() {
@@ -208,7 +270,23 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
                 currentMonthDue += t.getAmount();
             }
         }
-        tvMonthDues.setText(String.format("Current Month Total: %.2f", currentMonthDue));
+        
+        // Logic:
+        // User wants "Last Month Due" to be the remainder of the total debt after subtracting the current month's bill.
+        // If a payment is made, it reduces the Total Due, and thus naturally reduces this "Last Month Due" figure.
+        // Formula: Last Month Due = Total Due - Current Month Bill
+        
+        double lastMonthDue = customer.currentDue - currentMonthDue;
+        
+        // Update UI
+        // 1. Month Dues TextView now shows "Last Month Due"
+        tvMonthDues.setText(String.format("Last Month Due: %.2f", lastMonthDue));
+        
+        // 2. New TextView for Current Month Bill
+        TextView tvCurrentMonth = findViewById(R.id.tvCurrentMonthTotal);
+        if (tvCurrentMonth != null) { 
+            tvCurrentMonth.setText(String.format("Current Month Bill: %.2f", currentMonthDue));
+        }
     }
 
     private void loadTodayEntries() {

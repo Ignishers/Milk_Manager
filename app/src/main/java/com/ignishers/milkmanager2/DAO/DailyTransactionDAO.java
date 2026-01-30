@@ -30,6 +30,7 @@ public class DailyTransactionDAO {
         cv.put(COL_TRANS_AMOUNT, transaction.getAmount());
         cv.put(COL_TRANS_TIMESTAMP, transaction.getTimestamp());
         cv.put(COL_TRANS_PAYMENT_MODE, transaction.getPaymentMode()); // Save Payment Mode
+        cv.put(COL_TRANS_MILK_TYPE, transaction.getMilkType()); // Save Milk Type
         return db.insert(MILK_TRANSACTION_TABLE, null, cv);
     }
 
@@ -51,9 +52,11 @@ public class DailyTransactionDAO {
         if (cursor.moveToFirst()) {
             // Check column index safely
             int modeIndex = cursor.getColumnIndex(COL_TRANS_PAYMENT_MODE);
+            int typeIndex = cursor.getColumnIndex(COL_TRANS_MILK_TYPE);
 
             do {
                 String mode = (modeIndex != -1) ? cursor.getString(modeIndex) : null;
+                String type = (typeIndex != -1) ? cursor.getString(typeIndex) : "Regular"; 
 
                 DailyTransaction transaction = new DailyTransaction(
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_TRANS_ID)),
@@ -63,7 +66,8 @@ public class DailyTransactionDAO {
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_TIMESTAMP)),
-                        mode // Pass retrieved mode
+                        mode, // Pass retrieved mode
+                        type  // Pass retrieved type
                 );
                 transactionList.add(transaction);
             } while (cursor.moveToNext());
@@ -83,9 +87,11 @@ public class DailyTransactionDAO {
 
         if (cursor.moveToFirst()) {
             int modeIndex = cursor.getColumnIndex(COL_TRANS_PAYMENT_MODE);
+            int typeIndex = cursor.getColumnIndex(COL_TRANS_MILK_TYPE);
 
             do {
                 String mode = (modeIndex != -1) ? cursor.getString(modeIndex) : null;
+                String type = (typeIndex != -1) ? cursor.getString(typeIndex) : "Regular";
 
                 DailyTransaction transaction = new DailyTransaction(
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_TRANS_ID)),
@@ -95,7 +101,8 @@ public class DailyTransactionDAO {
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_TIMESTAMP)),
-                        mode // Pass retrieved mode
+                        mode, // Pass retrieved mode
+                        type  // Pass retrieved type
                 );
                 transactionList.add(transaction);
             } while (cursor.moveToNext());

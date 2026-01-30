@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "milky_mist_db";
-    private static final int DB_VERSION = 3; // Increment version if you already deployed v1
+    private static final int DB_VERSION = 4; // Increment version if you already deployed v1
 
     // ==========================================
     // 1. ROUTE GROUP TABLE (Hierarchy) - LOOKS GOOD
@@ -57,6 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_TRANS_AMOUNT = "transaction_amount";     // double
     public static final String COL_TRANS_TIMESTAMP = "transaction_timestamp"; // millis
     public static final String COL_TRANS_PAYMENT_MODE = "transaction_payment_mode"; // Cash / UPI / Card
+    public static final String COL_TRANS_MILK_TYPE = "transaction_milk_type"; // NEW: Regular / Extra
 
     // ==========================================
     // 5. PAYMENT TABLE (Cash received)
@@ -115,7 +116,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_TRANS_QUANTITY + " REAL, " +
                 COL_TRANS_AMOUNT + " REAL, " +
                 COL_TRANS_TIMESTAMP + " TEXT, " +
-                COL_TRANS_PAYMENT_MODE + " TEXT, " + // NEW COLUMN
+                COL_TRANS_PAYMENT_MODE + " TEXT, " +
+                COL_TRANS_MILK_TYPE + " TEXT, " + // NEW COLUMN
                 // FOREIGN KEY CONSTRAINT: Ensure customer exists before adding transaction
                 "FOREIGN KEY(" + COL_TRANS_CUSTOMER_ID_FK + ") REFERENCES " + CUSTOMER_TABLE + "(" + COL_CUSTOMER_ID + ") ON DELETE CASCADE" +
                 ");";
@@ -175,6 +177,15 @@ public class DBHelper extends SQLiteOpenHelper {
             } catch (Exception e) {
                  Log.e("DBHelper", "Error upgrading to v3: " + e.getMessage());
             }
+        }
+        
+        if (oldVersion < 4) {
+             try {
+                 // Add Milk Type column to existing table
+                 db.execSQL("ALTER TABLE " + MILK_TRANSACTION_TABLE + " ADD COLUMN " + COL_TRANS_MILK_TYPE + " TEXT;");
+             } catch (Exception e) {
+                 Log.e("DBHelper", "Error upgrading to v4: " + e.getMessage());
+             }
         }
     }
 
