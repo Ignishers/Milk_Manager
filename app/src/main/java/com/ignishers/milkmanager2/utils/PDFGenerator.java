@@ -232,23 +232,60 @@ public class PDFGenerator {
                  
                  String mornQ="", mornA="", eveQ="", eveA="", extraQ="", extraA="", payA="", payNote="";
                  
+                 // Accumulators for aggregation
+                 double sumMornQ = 0, sumMornA = 0;
+                 double sumEveQ = 0, sumEveA = 0;
+                 double sumExtraQ = 0, sumExtraA = 0;
+                 double sumPayA = 0;
+                 java.util.List<String> payModes = new java.util.ArrayList<>();
+
+                 // Aggregate transactions for the day
                  for (DailyTransaction t : dayTrans) {
                      String s = t.getSession();
                      double amt = t.getAmount();
                      double qty = t.getQuantity();
                      
                      if (s.equalsIgnoreCase("Morning")) {
-                         mornQ = formatMilk(qty);
-                         mornA = String.format("%.2f", amt);
+                         sumMornQ += qty;
+                         sumMornA += amt;
                      } else if (s.equalsIgnoreCase("Evening")) {
-                         eveQ = formatMilk(qty);
-                         eveA = String.format("%.2f", amt);
+                         sumEveQ += qty;
+                         sumEveA += amt;
                      } else if (s.startsWith("Payment")) {
-                         payA = String.format("- %.2f", amt);
-                         if (t.getPaymentMode() != null) payNote = "(" + t.getPaymentMode() + ")";
+                         sumPayA += amt;
+                         String pm = t.getPaymentMode();
+                         if (pm != null && !pm.isEmpty() && !payModes.contains(pm)) {
+                             payModes.add(pm);
+                         }
                      } else {
-                         extraQ = formatMilk(qty);
-                         extraA = String.format("%.2f", amt);
+                         sumExtraQ += qty;
+                         sumExtraA += amt;
+                     }
+                 }
+
+                 // Format aggregated values
+                 if (sumMornQ > 0 || sumMornA > 0) {
+                     mornQ = formatMilk(sumMornQ);
+                     mornA = String.format("%.2f", sumMornA);
+                 }
+                 if (sumEveQ > 0 || sumEveA > 0) {
+                     eveQ = formatMilk(sumEveQ);
+                     eveA = String.format("%.2f", sumEveA);
+                 }
+                 if (sumExtraQ > 0 || sumExtraA > 0) {
+                     extraQ = formatMilk(sumExtraQ);
+                     extraA = String.format("%.2f", sumExtraA);
+                 }
+                 if (sumPayA > 0) {
+                     payA = String.format("- %.2f", sumPayA);
+                     if (!payModes.isEmpty()) {
+                         StringBuilder sb = new StringBuilder("(");
+                         for (int i = 0; i < payModes.size(); i++) {
+                             sb.append(payModes.get(i));
+                             if (i < payModes.size() - 1) sb.append(", ");
+                         }
+                         sb.append(")");
+                         payNote = sb.toString();
                      }
                  }
                  
