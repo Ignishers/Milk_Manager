@@ -9,11 +9,12 @@
     android:background="@color/surface_light">
 
     <TextView
+        android:id="@+id/tvTitle"
         android:text="Create New Customer"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/text_primary_light"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -38,7 +39,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:hint="Mobile Number">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -49,17 +50,76 @@
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Default Quantity -->
+    <!-- Unit Toggle: Liters / Rupees -->
+    <TextView
+        android:text="Default Quantity Unit"
+        android:textSize="12sp"
+        android:textColor="@color/text_secondary_light"
+        android:textAllCaps="true"
+        android:letterSpacing="0.05"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"/>
+
+    <RadioGroup
+        android:id="@+id/rgUnit"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
+
+        <RadioButton
+            android:id="@+id/rbLiters"
+            android:text="Liters (L)"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"/>
+
+        <RadioButton
+            android:id="@+id/rbRupees"
+            android:text="Rupees (₹)"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tvRateHint"
+        android:text="Rate: ₹0/L"
+        android:textSize="11sp"
+        android:textColor="#9E9E9E"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Morning Qty -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilDefaultQty"
+        android:id="@+id/tilMorningQty"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Default Quantity (Litres)">
+        android:hint="☀ Morning Quantity">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDefaultQty"
+            android:id="@+id/etMorningQty"
+            android:inputType="numberDecimal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Evening Qty -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilEveningQty"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="🌙 Evening Quantity">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEveningQty"
             android:inputType="numberDecimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -72,7 +132,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:hint="Current Due (Optional)">
+        android:hint="Opening Due ₹ (Optional)">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCurrentDue"

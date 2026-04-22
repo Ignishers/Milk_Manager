@@ -1,19 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="56dp"
+    android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="16dp">
+    android:paddingStart="16dp"
+    android:paddingEnd="8dp">
 
     <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@android:drawable/ic_menu_agenda" />
+        android:src="@android:drawable/ic_menu_agenda"
+        android:contentDescription="Folder" />
 
     <TextView
         android:id="@+id/folderName"
         android:layout_marginStart="16dp"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content" />
+
+    <!-- Up/Down reorder arrows -->
+    <ImageButton
+        android:id="@+id/btnMoveUp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/arrow_up_float"
+        android:contentDescription="Move Up"
+        android:padding="6dp" />
+
+    <ImageButton
+        android:id="@+id/btnMoveDown"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/arrow_down_float"
+        android:contentDescription="Move Down"
+        android:padding="6dp" />
+
 </LinearLayout>

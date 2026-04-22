@@ -8,8 +8,8 @@ import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
 
-import com.ignishers.milkmanager2.model.Customer;
-import com.ignishers.milkmanager2.model.DailyTransaction;
+import com.ignishers.milkmanager2.models.Customer;
+import com.ignishers.milkmanager2.models.DailyTransaction;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,6 +23,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Default documentation for PDFGenerator.
+ * <p>
+ * This class is a part of the utils component in the Milk Manager 2 architecture.
+ * It operates within the standard Android application lifecycle and interacts
+ * with its associated modules to fulfill business logic requirements.
+ * Data usually flows from the local SQLite layer through DAOs, into ViewModels, 
+ * and finally binding to Android Views.
+ * </p>
+ *
+ * @since 1.0
+ */
 public class PDFGenerator {
 
     private Context context;
@@ -45,8 +57,13 @@ public class PDFGenerator {
     private static final int COL_MORN = MARGIN + 60;
     private static final int COL_EVE = MARGIN + 160;
     private static final int COL_EXTRA = MARGIN + 260;
-    private static final int COL_PAY = MARGIN + 360;
-
+    private static final int COL_PAY = MARGIN + 360;    /**
+     * Constructs a new {@code PDFGenerator} instance.
+     * <p>
+     * Initializes the object's state and prepares it for use within the application context.
+     * Data dependencies required for the entity are injected here.
+     * </p>
+     */
     public PDFGenerator(Context context, Customer customer, List<DailyTransaction> transactions, double initialOpeningBalance, double headerTotalDue) {
         this.context = context;
         this.customer = customer;
@@ -56,6 +73,13 @@ public class PDFGenerator {
         initPaints();
     }
 
+    /**
+    * Executes the {@code initPaints} operation.
+    * <p>
+    * Handles specific domain logic pertaining to this component's responsibility. Data input
+    * is processed and state mutations or callbacks are executed locally.
+    * </p>
+    */
     private void initPaints() {
         titlePaint = new Paint();
         titlePaint.setColor(Color.BLACK);
@@ -98,6 +122,16 @@ public class PDFGenerator {
         watermarkPaint.setAlpha(80); 
     }
 
+    /**
+    * Executes the {@code generate} operation.
+    * <p>
+    * Handles specific domain logic pertaining to this component's responsibility. Data input
+    * is processed and state mutations or callbacks are executed locally.
+    * </p>
+    *
+    * @param fileName standard parameter provided by caller layer.
+    * @return the resulting {@code File} payload.
+    */
     public File generate(String fileName) {
         PdfDocument document = new PdfDocument();
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create();
@@ -412,6 +446,17 @@ public class PDFGenerator {
         }
     }
     
+    /**
+    * Executes the {@code drawMainHeader} operation.
+    * <p>
+    * Handles specific domain logic pertaining to this component's responsibility. Data input
+    * is processed and state mutations or callbacks are executed locally.
+    * </p>
+    *
+    * @param canvas standard parameter provided by caller layer.
+    * @param y standard parameter provided by caller layer.
+    * @return the resulting {@code int} payload.
+    */
     private int drawMainHeader(Canvas canvas, int y) {
         canvas.drawText("Milk Manager 2", PAGE_WIDTH / 2, y + 20, titlePaint);
         y += 60;
@@ -440,6 +485,16 @@ public class PDFGenerator {
         return y;
     }
     
+    /**
+    * Executes the {@code drawTableHeader} operation.
+    * <p>
+    * Handles specific domain logic pertaining to this component's responsibility. Data input
+    * is processed and state mutations or callbacks are executed locally.
+    * </p>
+    *
+    * @param canvas standard parameter provided by caller layer.
+    * @param y standard parameter provided by caller layer.
+    */
     private void drawTableHeader(Canvas canvas, int y) {
         canvas.drawText("Date", COL_DATE, y, subHeaderPaint);
         canvas.drawText("Morning", COL_MORN, y, subHeaderPaint);
@@ -448,10 +503,29 @@ public class PDFGenerator {
         canvas.drawText("Payment", COL_PAY, y, subHeaderPaint);
     }
     
+    /**
+    * Executes the {@code drawWatermark} operation.
+    * <p>
+    * Handles specific domain logic pertaining to this component's responsibility. Data input
+    * is processed and state mutations or callbacks are executed locally.
+    * </p>
+    *
+    * @param canvas standard parameter provided by caller layer.
+    */
     private void drawWatermark(Canvas canvas) {
         canvas.drawText("IGNISHERS", PAGE_WIDTH / 2, PAGE_HEIGHT - 30, watermarkPaint);
     }
     
+    /**
+    * Executes the {@code formatMilk} operation.
+    * <p>
+    * Handles specific domain logic pertaining to this component's responsibility. Data input
+    * is processed and state mutations or callbacks are executed locally.
+    * </p>
+    *
+    * @param qty standard parameter provided by caller layer.
+    * @return the resulting {@code String} payload.
+    */
     private String formatMilk(double qty) {
         if (qty >= 1.0) {
             return String.format("%.1f L", qty);

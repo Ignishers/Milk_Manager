@@ -17,6 +17,10 @@ lifecycleViewmodelKtx = "2.10.0"
 fragment = "1.8.9"
 retrofit = "3.0.0"
 roomRuntime = "2.6.1"
+googleAuth = "21.3.0"
+googleDrive = "v3-rev20220815-2.0.0"
+googleApiClient = "2.7.2"
+httpClient = "1.44.2"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -38,6 +42,10 @@ fragment = { group = "androidx.fragment", name = "fragment", version.ref = "frag
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+google-play-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleAuth" }
+google-drive = { module = "com.google.apis:google-api-services-drive", version.ref = "googleDrive" }
+google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClient" }
+google-http-client-gson = { module = "com.google.http-client:google-http-client-gson", version.ref = "httpClient" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

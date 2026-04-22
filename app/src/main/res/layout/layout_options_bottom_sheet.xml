@@ -18,7 +18,7 @@
             android:id="@+id/tvSheetTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Options"
+            android:text="@string/options"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/black"/>
@@ -27,7 +27,7 @@
             android:id="@+id/tvSheetSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select an action"
+            android:text="@string/select_an_action"
             android:textSize="14sp"
             android:textColor="#757575"
             android:layout_marginTop="4dp"/>
@@ -54,17 +54,46 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_move_to_inbox"
-            app:tint="#616161"/> 
+            app:tint="#616161"
+            android:contentDescription="@string/move_to_folder"/>
             
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Move to Folder"
+            android:text="@string/move_to_folder"
             android:textSize="16sp"
             android:textColor="#424242"
             android:layout_marginStart="24dp"/>
     </LinearLayout>
     
+    <!-- Edit Option -->
+    <LinearLayout
+        android:id="@+id/optionEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_edit"
+            app:tint="#424242"
+            android:contentDescription="@string/edit_details"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_details"
+            android:textSize="16sp"
+            android:textColor="#424242"
+            android:layout_marginStart="24dp"/>
+    </LinearLayout>
+
     <!-- Delete Option -->
     <LinearLayout
         android:id="@+id/optionDelete"
@@ -81,12 +110,13 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_delete_forever"
-            app:tint="#D32F2F"/> <!-- Red for Danger -->
+            app:tint="#D32F2F"
+            android:contentDescription="@string/delete"/> <!-- Red for Danger -->
             
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Delete"
+            android:text="@string/delete"
             android:textSize="16sp"
             android:textColor="#D32F2F"
             android:layout_marginStart="24dp"/>

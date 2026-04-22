@@ -11,6 +11,18 @@ import android.view.View;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Default documentation for SimplePieView.
+ * <p>
+ * This class is a part of the views component in the Milk Manager 2 architecture.
+ * It operates within the standard Android application lifecycle and interacts
+ * with its associated modules to fulfill business logic requirements.
+ * Data usually flows from the local SQLite layer through DAOs, into ViewModels, 
+ * and finally binding to Android Views.
+ * </p>
+ *
+ * @since 1.0
+ */
 public class SimplePieView extends View {
 
     private List<PieItem> data;
@@ -28,13 +40,27 @@ public class SimplePieView extends View {
         public String label;
         public float value;
         public PieItem(String l, float v) { label = l; value = v; }
-    }
-
+    }    /**
+     * Constructs a new {@code SimplePieView} instance.
+     * <p>
+     * Initializes the object's state and prepares it for use within the application context.
+     * Data dependencies required for the entity are injected here.
+     * </p>
+     */
     public SimplePieView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
+    /**
+    * Mutates the state of {@code Data}.
+    * <p>
+    * Assigns the provided value to the underlying property. This may trigger UI updates
+    * or database writes depending on the architecture layer.
+    * </p>
+    *
+    * @param data standard parameter provided by caller layer.
+    */
     public void setData(List<PieItem> data) {
         this.data = data;
         invalidate();

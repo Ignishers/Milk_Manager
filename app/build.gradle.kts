@@ -14,7 +14,7 @@ android {
         minSdk = 30
         targetSdk = 36
         versionCode = 1
-        versionName = "1.8"
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,6 +37,12 @@ android {
         buildConfig = true
     }
     
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
+
     lint {
         abortOnError = false
     }
@@ -58,16 +64,12 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.fragment)
     implementation(libs.mpandroidchart)
-    
-    // Networking & JSON
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.gson)
-    implementation(libs.okhttp)
 
-    // Room Database
-    implementation(libs.room.runtime)
-    annotationProcessor(libs.room.compiler)
+    // Google Drive Backup
+    implementation(libs.google.play.auth)
+    implementation(libs.google.drive)
+    implementation(libs.google.api.client.android)
+    implementation(libs.google.http.client.gson)
 
     // Testing
     testImplementation(libs.junit)

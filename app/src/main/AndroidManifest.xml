@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -17,26 +20,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MilkManager2">
         <activity
-            android:name=".PointOfSaleActivity"
+            android:name=".activities.PointOfSaleActivity"
             android:exported="false" />
         <activity
-            android:name=".SalesReportActivity"
+            android:name=".activities.SalesReportActivity"
             android:exported="false" />
         <activity
-            android:name=".DashboardActivity"
+            android:name=".activities.DashboardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity android:name=".AdminDashboardActivity" android:exported="false" />
-        <activity android:name=".CreateSellerActivity" android:exported="false" />
-        <activity android:name=".SellerListActivity" android:exported="false" />
-        <activity android:name=".BillActivity" android:exported="false" />
+
+        <activity android:name=".activities.BillActivity" android:exported="false" />
+        <activity android:name=".activities.SettingsActivity" android:exported="false" />
+
         
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -47,6 +47,25 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <!-- Auto-Entry Alarm Receiver -->
+        <receiver
+            android:name=".AutoEntryReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.ignishers.milkmanager2.AUTO_ENTRY_MORNING" />
+                <action android:name="com.ignishers.milkmanager2.AUTO_ENTRY_EVENING" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Boot Receiver — reschedules alarms after reboot -->
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
