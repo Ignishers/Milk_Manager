@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <!-- ===== AppBar ===== -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -26,176 +27,214 @@
             app:navigationIconTint="@color/on_secondary"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+
+        <!-- Per-customer auto-entry toggle strip -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/primary"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="6dp">
+
+            <TextView
+                android:id="@+id/tvAutoEntryLabel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Auto Milk Entry"
+                android:textColor="@color/on_secondary"
+                android:textSize="13sp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchCustomerAutoEntry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Toggle auto milk entry for this customer" />
+
+        </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- ===== Scrollable Content ===== -->
+    <!--
+        NestedScrollView replaces the old fixed ConstraintLayout.
+        On small screens the user can scroll to see everything.
+        RecyclerView inside has nestedScrollingEnabled=false so it
+        expands to full height and the outer scroll handles everything.
+    -->
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Combined Info and Month Summary Card -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/infoCard"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <!-- ── Customer Info + Last Month Due card ── -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/infoCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp">
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
 
-                <TextView
-                    android:id="@+id/tvName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/name"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/iconAction"/>
-
-                <TextView
-                    android:id="@+id/tvNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/number"
-                    android:textSize="14sp"
-                    android:textColor="#666666"
-                    app:layout_constraintTop_toBottomOf="@+id/tvName"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/tvDues"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/due"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#D32F2F"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@+id/tvNumber"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <ImageView
-                    android:id="@+id/iconAction"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_my_calendar"
-                    app:tint="@color/primary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <!-- Divider -->
-                <View
-                    android:id="@+id/cardDivider"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:background="#EEEEEE"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDues"/>
-
-                <!-- Month Summary Section -->
-                <TextView
-                    android:id="@+id/tvMonthDues"
-                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/month_dues"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary_light"
-                    app:layout_constraintTop_toBottomOf="@+id/cardDivider"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/btnPayment"
-                    android:layout_marginEnd="8dp"/>
+                    android:padding="12dp">
 
-                <Button
-                    android:id="@+id/btnPayment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Pay"
-                    android:textSize="12sp"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@android:color/white"
-                    android:backgroundTint="@color/primary"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardDivider"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    <TextView
+                        android:id="@+id/tvName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/name"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#000000"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/iconAction"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/tvNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/number"
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        app:layout_constraintTop_toBottomOf="@+id/tvName"
+                        app:layout_constraintStart_toStartOf="parent"/>
 
-        <!-- Use FragmentContainerView directly (Fragment has its own CardView) -->
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="0dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/infoCard"
-            tools:layout="@layout/fragment_milk_entry" />
+                    <TextView
+                        android:id="@+id/tvDues"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/due"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#D32F2F"
+                        android:layout_marginTop="4dp"
+                        app:layout_constraintTop_toBottomOf="@+id/tvNumber"
+                        app:layout_constraintStart_toStartOf="parent"/>
 
+                    <ImageView
+                        android:id="@+id/iconAction"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@android:drawable/ic_menu_my_calendar"
+                        app:tint="@color/primary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/today_entry_card"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragmentContainerView">
+                    <!-- Divider -->
+                    <View
+                        android:id="@+id/cardDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:background="#EEEEEE"
+                        app:layout_constraintTop_toBottomOf="@+id/tvDues"/>
 
+                    <!-- Last Month Due (green) -->
+                    <TextView
+                        android:id="@+id/tvMonthDues"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/month_dues"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#388E3C"
+                        app:layout_constraintTop_toBottomOf="@+id/cardDivider"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btnPayment"
+                        android:layout_marginEnd="8dp"/>
 
-            <LinearLayout
+                    <Button
+                        android:id="@+id/btnPayment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Pay"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="@color/primary"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cardDivider"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ── Milk Entry Fragment (buttons) ── -->
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragmentContainerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                tools:layout="@layout/fragment_milk_entry" />
 
-                <TextView
-                    android:id="@+id/tvCurrentMonthTotal"
+            <!-- ── Today's Transactions Card ── -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/today_entry_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Current Month Bill: 0.0"
-                    android:textColor="@color/primary"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:gravity="center_horizontal"/>
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EEEEEE"/>
+                    <TextView
+                        android:id="@+id/tvCurrentMonthTotal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Current Month Bill: 0.0"
+                        android:textColor="@color/primary"
+                        android:textStyle="bold"
+                        android:padding="8dp"
+                        android:gravity="center_horizontal"/>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvTodayEntries"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#EEEEEE"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <!--
+                        nestedScrollingEnabled="false" → RecyclerView expands
+                        to show ALL items; outer NestedScrollView handles scroll.
+                        wrap_content height works correctly with this flag.
+                    -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTodayEntries"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never" />
 
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
