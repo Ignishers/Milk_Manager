@@ -1,17 +1,17 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
 }
-
-import java.util.Properties
-import java.io.FileInputStream
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
-val supabaseUrl = localProperties.getProperty("SUPABASE_URL", "")
-val supabaseKey = localProperties.getProperty("SUPABASE_KEY", "")
+val supabaseUrl = localProperties.getProperty("SUPABASE_URL", "") as String? ?: ""
+val supabaseKey = localProperties.getProperty("SUPABASE_KEY", "") as String? ?: ""
 
 // Set Base Name for output files (e.g. MilkManager2-release.apk)
 base {
@@ -27,7 +27,7 @@ android {
         minSdk = 30
         targetSdk = 36
         versionCode = 1
-        versionName = "2.0"
+        versionName = "2.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
