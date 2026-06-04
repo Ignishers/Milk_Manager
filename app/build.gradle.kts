@@ -3,7 +3,9 @@ plugins {
 }
 
 // Set Base Name for output files (e.g. MilkManager2-release.apk)
-setProperty("archivesBaseName", "MilkManager2")
+base {
+    archivesName.set("MilkManager2")
+}
 
 android {
     namespace = "com.ignishers.milkmanager2"
