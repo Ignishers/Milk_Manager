@@ -218,7 +218,7 @@ public class MonthSummaryDialog extends DialogFragment {
                 // Aggregate
                 // Skip Payments from Milk Summary
                 if (t.getSession().startsWith("Payment")) {
-                    d.paymentAmt += t.getAmount();
+                    d.paymentAmt += t.getAmount().doubleValue();
                     continue;
                 }
                 
@@ -226,8 +226,8 @@ public class MonthSummaryDialog extends DialogFragment {
                 if (type == null) type = "Regular"; // Default legacy
                 
                 if ("Extra".equalsIgnoreCase(type)) {
-                    d.extraQty += t.getQuantity();
-                    d.extraAmt += t.getAmount();
+                    d.extraQty += t.getQuantity().doubleValue();
+                    d.extraAmt += t.getAmount().doubleValue();
                 } else {
                     // Regular: Split by Session using TIME LOGIC
                     boolean isMorning = false;
@@ -266,11 +266,11 @@ public class MonthSummaryDialog extends DialogFragment {
                     }
 
                     if (isMorning) {
-                        d.morQty += t.getQuantity();
-                        d.morAmt += t.getAmount();
+                        d.morQty += t.getQuantity().doubleValue();
+                        d.morAmt += t.getAmount().doubleValue();
                     } else {
-                        d.eveQty += t.getQuantity();
-                        d.eveAmt += t.getAmount();
+                        d.eveQty += t.getQuantity().doubleValue();
+                        d.eveAmt += t.getAmount().doubleValue();
                     }
                 }
 

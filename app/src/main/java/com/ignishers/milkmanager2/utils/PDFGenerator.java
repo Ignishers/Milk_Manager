@@ -161,8 +161,8 @@ public class PDFGenerator {
             for (DailyTransaction t : entry.getValue()) {
                  String s = t.getSession();
                  // Normalize session checks
-                 if (s.startsWith("Payment")) pay += t.getAmount();
-                 else bill += t.getAmount();
+                 if (s.startsWith("Payment")) pay += t.getAmount().doubleValue();
+                 else bill += t.getAmount().doubleValue();
             }
             currentBal += (bill - pay);
         }
@@ -212,8 +212,8 @@ public class PDFGenerator {
             
             for (DailyTransaction t : monthTrans) {
                  String s = t.getSession();
-                 double amt = t.getAmount();
-                 double qty = t.getQuantity();
+                 double amt = t.getAmount().doubleValue();
+                 double qty = t.getQuantity().doubleValue();
                  
                  if (s.equalsIgnoreCase("Morning")) {
                      sumMorn += amt;
@@ -276,8 +276,8 @@ public class PDFGenerator {
                  // Aggregate transactions for the day
                  for (DailyTransaction t : dayTrans) {
                      String s = t.getSession();
-                     double amt = t.getAmount();
-                     double qty = t.getQuantity();
+                     double amt = t.getAmount().doubleValue();
+                     double qty = t.getQuantity().doubleValue();
                      
                      if (s.equalsIgnoreCase("Morning")) {
                          sumMornQ += qty;

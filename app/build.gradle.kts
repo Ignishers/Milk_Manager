@@ -67,11 +67,10 @@ dependencies {
     implementation(libs.fragment)
     implementation(libs.mpandroidchart)
 
-    // Google Drive Backup
-    implementation(libs.google.play.auth)
-    implementation(libs.google.drive)
-    implementation(libs.google.api.client.android)
-    implementation(libs.google.http.client.gson)
+    // Networking & Sync
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.work.runtime)
 
     // Testing
     testImplementation(libs.junit)

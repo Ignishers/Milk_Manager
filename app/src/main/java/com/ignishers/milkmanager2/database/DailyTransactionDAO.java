@@ -2,61 +2,48 @@ package com.ignishers.milkmanager2.database;
 
 import com.ignishers.milkmanager2.database.DBHelper;
 import com.ignishers.milkmanager2.models.Customer;
-
 import static com.ignishers.milkmanager2.database.DBHelper.*;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.ignishers.milkmanager2.models.DailyTransaction;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Default documentation for DailyTransactionDAO.
- * <p>
- * This class is a part of the database component in the Milk Manager 2 architecture.
- * It operates within the standard Android application lifecycle and interacts
- * with its associated modules to fulfill business logic requirements.
- * Data usually flows from the local SQLite layer through DAOs, into ViewModels, 
- * and finally binding to Android Views.
- * </p>
- *
- * @since 1.0
- */
 public class DailyTransactionDAO {
     private final SQLiteDatabase db;
 
-    ///    Constructor
     public DailyTransactionDAO(Context context) {
         db = new DBHelper(context).getWritableDatabase();
     }
 
-    ///    Insert transaction
+    private BigDecimal getBigDecimal(Cursor c, int index) {
+        if (c.isNull(index)) return BigDecimal.ZERO;
+        String val = c.getString(index);
+        try {
+            return new BigDecimal(val);
+        } catch (NumberFormatException e) {
+            return BigDecimal.ZERO;
+        }
+    }
+
     public long insert(DailyTransaction transaction) {
         ContentValues cv = new ContentValues();
         cv.put(COL_TRANS_CUSTOMER_ID_FK, transaction.getCustomerId());
         cv.put(COL_TRANS_DATE, transaction.getDate());
         cv.put(COL_TRANS_SESSION, transaction.getSession());
-        cv.put(COL_TRANS_QUANTITY, transaction.getQuantity());
-        cv.put(COL_TRANS_AMOUNT, transaction.getAmount());
+        cv.put(COL_TRANS_QUANTITY, transaction.getQuantity().toPlainString());
+        cv.put(COL_TRANS_AMOUNT, transaction.getAmount().toPlainString());
         cv.put(COL_TRANS_TIMESTAMP, transaction.getTimestamp());
-        cv.put(COL_TRANS_PAYMENT_MODE, transaction.getPaymentMode()); // Save Payment Mode
-        cv.put(COL_TRANS_MILK_TYPE, transaction.getMilkType()); // Save Milk Type
+        cv.put(COL_TRANS_PAYMENT_MODE, transaction.getPaymentMode()); 
+        cv.put(COL_TRANS_MILK_TYPE, transaction.getMilkType()); 
         return db.insert(MILK_TRANSACTION_TABLE, null, cv);
     }
 
-
-    ///    Get Transactions by Month
     public List<DailyTransaction> getTransactionsByMonth(String customerId, String month, String year) {
         List<DailyTransaction> transactionList = new ArrayList<>();
-
-
-        // Query: Select rows where month and year match parameters
-        // month should be "01" through "12"
         String selectQuery = "SELECT * FROM " + MILK_TRANSACTION_TABLE +
                 " WHERE " + COL_TRANS_CUSTOMER_ID_FK + " = ?" +
                 " AND strftime('%m', " + COL_TRANS_DATE + ") = ?" +
@@ -65,7 +52,6 @@ public class DailyTransactionDAO {
         Cursor cursor = db.rawQuery(selectQuery, new String[]{customerId, month, year});
 
         if (cursor.moveToFirst()) {
-            // Check column index safely
             int modeIndex = cursor.getColumnIndex(COL_TRANS_PAYMENT_MODE);
             int typeIndex = cursor.getColumnIndex(COL_TRANS_MILK_TYPE);
 
@@ -78,11 +64,11 @@ public class DailyTransactionDAO {
                         cursor.getLong(cursor.getColumnIndexOrThrow(COL_TRANS_CUSTOMER_ID_FK)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_DATE)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_SESSION)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
+                        getBigDecimal(cursor, cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
+                        getBigDecimal(cursor, cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_TIMESTAMP)),
-                        mode, // Pass retrieved mode
-                        type  // Pass retrieved type
+                        mode,
+                        type
                 );
                 transactionList.add(transaction);
             } while (cursor.moveToNext());
@@ -91,17 +77,6 @@ public class DailyTransactionDAO {
         return transactionList;
     }
 
-    /**
-    * Retrieves the {@code TransactionsByDate} data.
-    * <p>
-    * This method acts as an accessor. If interacting with DAOs, it fetches the state
-    * from the SQLite database via a {@code Cursor} and maps it to the respective model objects.
-    * </p>
-    *
-    * @param customerId standard parameter provided by caller layer.
-    * @param date standard parameter provided by caller layer.
-    * @return the resulting {@code List<DailyTransaction>} payload.
-    */
     public List<DailyTransaction> getTransactionsByDate(long customerId, String date) {
         List<DailyTransaction> transactionList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + MILK_TRANSACTION_TABLE +
@@ -124,11 +99,11 @@ public class DailyTransactionDAO {
                         cursor.getLong(cursor.getColumnIndexOrThrow(COL_TRANS_CUSTOMER_ID_FK)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_DATE)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_SESSION)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
+                        getBigDecimal(cursor, cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
+                        getBigDecimal(cursor, cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_TIMESTAMP)),
-                        mode, // Pass retrieved mode
-                        type  // Pass retrieved type
+                        mode,
+                        type
                 );
                 transactionList.add(transaction);
             } while (cursor.moveToNext());
@@ -137,23 +112,10 @@ public class DailyTransactionDAO {
         return transactionList;
     }
 
-    /**
-    * Removes the {@code } entity permanently.
-    * <p>
-    * Executes a destructive SQL DELETE operation. Caution: This might cascade through
-    * related tables if foreign key constraints are enabled.
-    * </p>
-    *
-    * @param transactionId standard parameter provided by caller layer.
-    */
     public void delete(int transactionId) {
         db.delete(MILK_TRANSACTION_TABLE, COL_TRANS_ID + " = ?", new String[]{String.valueOf(transactionId)});
     }
 
-    /**
-     * Checks if a Regular (auto-entry) transaction already exists for a customer on today's date
-     * for the given session ("Morning" or "Evening").
-     */
     public boolean hasTodayEntry(long customerId, String session) {
         String today = java.time.LocalDate.now().toString();
         Cursor c = db.rawQuery(
@@ -168,15 +130,9 @@ public class DailyTransactionDAO {
         return exists;
     }
 
-    /**
-     * Deletes the Regular (auto-generated) transaction for a customer on today's date
-     * for the given session, and returns the deleted amount so the caller can update dues.
-     * @return the amount of the deleted transaction, or 0 if nothing was deleted.
-     */
-    public double deleteTodaySession(long customerId, String session) {
+    public BigDecimal deleteTodaySession(long customerId, String session) {
         String today = java.time.LocalDate.now().toString();
-        // First fetch the amount so we can reverse the due
-        double amount = 0;
+        BigDecimal amount = BigDecimal.ZERO;
         Cursor c = db.rawQuery(
             "SELECT " + COL_TRANS_ID + ", " + COL_TRANS_AMOUNT + " FROM " + MILK_TRANSACTION_TABLE +
             " WHERE " + COL_TRANS_CUSTOMER_ID_FK + " = ?" +
@@ -185,7 +141,7 @@ public class DailyTransactionDAO {
             " ORDER BY " + COL_TRANS_ID + " DESC LIMIT 1",
             new String[]{String.valueOf(customerId), today, session});
         if (c.moveToFirst()) {
-            amount = c.getDouble(1);
+            amount = getBigDecimal(c, 1);
             int transId = c.getInt(0);
             db.delete(MILK_TRANSACTION_TABLE, COL_TRANS_ID + " = ?", new String[]{String.valueOf(transId)});
         }
@@ -193,23 +149,10 @@ public class DailyTransactionDAO {
         return amount;
     }
 
-    /** Removes all transactions for a given customer (used when deleting a customer). */
     public void deleteAllForCustomer(long customerId) {
         db.delete(MILK_TRANSACTION_TABLE, COL_TRANS_CUSTOMER_ID_FK + " = ?", new String[]{String.valueOf(customerId)});
     }
 
-    /**
-    * Retrieves the {@code TransactionsByDateRange} data.
-    * <p>
-    * This method acts as an accessor. If interacting with DAOs, it fetches the state
-    * from the SQLite database via a {@code Cursor} and maps it to the respective model objects.
-    * </p>
-    *
-    * @param customerId standard parameter provided by caller layer.
-    * @param startDate standard parameter provided by caller layer.
-    * @param endDate standard parameter provided by caller layer.
-    * @return the resulting {@code List<DailyTransaction>} payload.
-    */
     public List<DailyTransaction> getTransactionsByDateRange(long customerId, String startDate, String endDate) {
         List<DailyTransaction> transactionList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + MILK_TRANSACTION_TABLE +
@@ -232,8 +175,8 @@ public class DailyTransactionDAO {
                         cursor.getLong(cursor.getColumnIndexOrThrow(COL_TRANS_CUSTOMER_ID_FK)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_DATE)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_SESSION)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
+                        getBigDecimal(cursor, cursor.getColumnIndexOrThrow(COL_TRANS_QUANTITY)),
+                        getBigDecimal(cursor, cursor.getColumnIndexOrThrow(COL_TRANS_AMOUNT)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_TRANS_TIMESTAMP)),
                         mode,
                         type
@@ -245,64 +188,51 @@ public class DailyTransactionDAO {
         return transactionList;
     }
 
-    // --------------------------------------------------------------------------------
-    // REPORTING METHODS
-    // --------------------------------------------------------------------------------
-
-    // 1. Lifetime Summary
     public ReportSummary getLifetimeSummary() {
         ReportSummary summary = new ReportSummary();
         
-        // Total Milk & Revenue (Exclude Payment entries)
-        String sqlSales = "SELECT SUM(" + COL_TRANS_QUANTITY + "), SUM(" + COL_TRANS_AMOUNT + ") FROM " + MILK_TRANSACTION_TABLE + 
+        String sqlSales = "SELECT SUM(CAST(" + COL_TRANS_QUANTITY + " as REAL)), SUM(CAST(" + COL_TRANS_AMOUNT + " as REAL)) FROM " + MILK_TRANSACTION_TABLE + 
                           " WHERE " + COL_TRANS_SESSION + " NOT LIKE 'Payment%'";
         Cursor c1 = db.rawQuery(sqlSales, null);
         if (c1.moveToFirst()) {
-            summary.totalMilk = c1.getDouble(0);
-            summary.totalRevenue = c1.getDouble(1);
+            summary.totalMilk = getBigDecimal(c1, 0);
+            summary.totalRevenue = getBigDecimal(c1, 1);
         }
         c1.close();
         
-        // Total Collected (Only Payment entries)
-        String sqlCollected = "SELECT SUM(" + COL_TRANS_AMOUNT + ") FROM " + MILK_TRANSACTION_TABLE + 
+        String sqlCollected = "SELECT SUM(CAST(" + COL_TRANS_AMOUNT + " as REAL)) FROM " + MILK_TRANSACTION_TABLE + 
                               " WHERE " + COL_TRANS_SESSION + " LIKE 'Payment%'";
         Cursor c2 = db.rawQuery(sqlCollected, null);
         if (c2.moveToFirst()) {
-            summary.totalCollected = c2.getDouble(0);
+            summary.totalCollected = getBigDecimal(c2, 0);
         }
         c2.close();
         
-        // Total Legacy Due (From Customer Table)
-        String sqlLegacy = "SELECT SUM(" + COL_CUSTOMER_CURRENT_DUE + ") FROM " + CUSTOMER_TABLE;
+        String sqlLegacy = "SELECT SUM(CAST(" + COL_CUSTOMER_CURRENT_DUE + " as REAL)) FROM " + CUSTOMER_TABLE;
         Cursor c3 = db.rawQuery(sqlLegacy, null);
         if (c3.moveToFirst()) {
-            summary.totalLegacyDue = c3.getDouble(0);
+            summary.totalLegacyDue = getBigDecimal(c3, 0);
         }
         c3.close();
         
-        // Update Revenue to include Legacy Due (as per user request)
-        summary.totalRevenue += summary.totalLegacyDue;
-        
-        // Total Due = Revenue (now includes Legacy) - Collected
-        summary.totalDue = summary.totalRevenue - summary.totalCollected;
+        summary.totalRevenue = summary.totalRevenue.add(summary.totalLegacyDue);
+        summary.totalDue = summary.totalRevenue.subtract(summary.totalCollected);
         
         return summary;
     }
 
-    // 2. Monthly Breakdown for a specific year
     public List<MonthlyReportItem> getMonthlyBreakdown(int year) {
         List<MonthlyReportItem> list = new ArrayList<>();
         String yearStr = String.valueOf(year);
         
-        // Arrays to hold data for 12 months (index 1-12)
-        double[] milk = new double[13];
-        double[] sales = new double[13];
-        double[] collected = new double[13];
+        BigDecimal[] milk = new BigDecimal[13];
+        BigDecimal[] sales = new BigDecimal[13];
+        BigDecimal[] collected = new BigDecimal[13];
+        for(int i=0; i<13; i++) { milk[i] = BigDecimal.ZERO; sales[i] = BigDecimal.ZERO; collected[i] = BigDecimal.ZERO; }
 
-        // 1. Get Sales
         String sqlSales = "SELECT strftime('%m', " + COL_TRANS_DATE + ") as month, " +
-                     "SUM(" + COL_TRANS_QUANTITY + "), " +
-                     "SUM(" + COL_TRANS_AMOUNT + ") " +
+                     "SUM(CAST(" + COL_TRANS_QUANTITY + " as REAL)), " +
+                     "SUM(CAST(" + COL_TRANS_AMOUNT + " as REAL)) " +
                      "FROM " + MILK_TRANSACTION_TABLE + " " +
                      "WHERE strftime('%Y', " + COL_TRANS_DATE + ") = ? " +
                      "AND " + COL_TRANS_SESSION + " NOT LIKE 'Payment%' " +
@@ -314,17 +244,16 @@ public class DailyTransactionDAO {
                 try {
                     int m = Integer.parseInt(mStr);
                     if (m >= 1 && m <= 12) {
-                        milk[m] = c1.getDouble(1);
-                        sales[m] = c1.getDouble(2);
+                        milk[m] = getBigDecimal(c1, 1);
+                        sales[m] = getBigDecimal(c1, 2);
                     }
                 } catch (NumberFormatException e) { }
             }
         }
         c1.close();
         
-        // 2. Get Collections
         String sqlCollected = "SELECT strftime('%m', " + COL_TRANS_DATE + ") as month, " +
-                              "SUM(" + COL_TRANS_AMOUNT + ") " +
+                              "SUM(CAST(" + COL_TRANS_AMOUNT + " as REAL)) " +
                               "FROM " + MILK_TRANSACTION_TABLE + " " +
                               "WHERE strftime('%Y', " + COL_TRANS_DATE + ") = ? " +
                               "AND " + COL_TRANS_SESSION + " LIKE 'Payment%' " +
@@ -336,16 +265,15 @@ public class DailyTransactionDAO {
                 try {
                     int m = Integer.parseInt(mStr);
                     if (m >= 1 && m <= 12) {
-                        collected[m] = c2.getDouble(1);
+                        collected[m] = getBigDecimal(c2, 1);
                     }
                 } catch (NumberFormatException e) { }
             }
         }
         c2.close();
         
-        // Merge
         for (int i=1; i<=12; i++) {
-            if (milk[i] > 0 || sales[i] > 0 || collected[i] > 0) {
+            if (milk[i].compareTo(BigDecimal.ZERO) > 0 || sales[i].compareTo(BigDecimal.ZERO) > 0 || collected[i].compareTo(BigDecimal.ZERO) > 0) {
                  list.add(new MonthlyReportItem(i, milk[i], sales[i], collected[i]));
             }
         }
@@ -353,35 +281,21 @@ public class DailyTransactionDAO {
         return list;
     }
 
-    // Helper classes for Reporting
     public static class ReportSummary {
-        public double totalMilk;
-        public double totalRevenue;
-        public double totalCollected;
-        public double totalDue;
-        public double totalLegacyDue;
+        public BigDecimal totalMilk = BigDecimal.ZERO;
+        public BigDecimal totalRevenue = BigDecimal.ZERO;
+        public BigDecimal totalCollected = BigDecimal.ZERO;
+        public BigDecimal totalDue = BigDecimal.ZERO;
+        public BigDecimal totalLegacyDue = BigDecimal.ZERO;
     }
 
     public static class MonthlyReportItem {
         public int month; // 1-12
-        public double milk;
-        public double amount;
-        public double collected;
+        public BigDecimal milk;
+        public BigDecimal amount;
+        public BigDecimal collected;
 
-        /**
-        * Executes the {@code MonthlyReportItem} operation.
-        * <p>
-        * Handles specific domain logic pertaining to this component's responsibility. Data input
-        * is processed and state mutations or callbacks are executed locally.
-        * </p>
-        *
-        * @param m standard parameter provided by caller layer.
-        * @param mi standard parameter provided by caller layer.
-        * @param a standard parameter provided by caller layer.
-        * @param c standard parameter provided by caller layer.
-        * @return the resulting {@code public} payload.
-        */
-        public MonthlyReportItem(int m, double mi, double a, double c) {
+        public MonthlyReportItem(int m, BigDecimal mi, BigDecimal a, BigDecimal c) {
             month = m;
             milk = mi;
             amount = a;
@@ -389,37 +303,32 @@ public class DailyTransactionDAO {
         }
     }
 
-    // 3. Customer Sales Ranking (Top N)
     public List<CustomerSalesItem> getCustomerSalesRanking(int limit) {
         List<CustomerSalesItem> list = new ArrayList<>();
-        // Join with Customer table to get names
-        // Sum quantity and amount for each customer
-        String sql = "SELECT c." + COL_CUSTOMER_NAME + ", SUM(t." + COL_TRANS_QUANTITY + "), SUM(t." + COL_TRANS_AMOUNT + ") " +
+        String sql = "SELECT c." + COL_CUSTOMER_NAME + ", SUM(CAST(t." + COL_TRANS_QUANTITY + " as REAL)), SUM(CAST(t." + COL_TRANS_AMOUNT + " as REAL)) " +
                      "FROM " + MILK_TRANSACTION_TABLE + " t " +
                      "JOIN " + CUSTOMER_TABLE + " c ON t." + COL_TRANS_CUSTOMER_ID_FK + " = c." + COL_CUSTOMER_ID + " " +
                      "WHERE t." + COL_TRANS_SESSION + " NOT LIKE 'Payment%' " +
                      "GROUP BY t." + COL_TRANS_CUSTOMER_ID_FK + " " +
-                     "ORDER BY SUM(t." + COL_TRANS_AMOUNT + ") DESC " +
+                     "ORDER BY SUM(CAST(t." + COL_TRANS_AMOUNT + " as REAL)) DESC " +
                      "LIMIT ?";
 
         Cursor c = db.rawQuery(sql, new String[]{String.valueOf(limit)});
         while (c.moveToNext()) {
-            list.add(new CustomerSalesItem(c.getString(0), c.getDouble(1), c.getDouble(2)));
+            list.add(new CustomerSalesItem(c.getString(0), getBigDecimal(c, 1), getBigDecimal(c, 2)));
         }
         c.close();
         return list;
     }
 
-    // 4. Yearly Revenue Trend (Last N Years)
     public List<YearlyReportItem> getYearlyRevenueTrend(int numberOfYears) {
         List<YearlyReportItem> list = new ArrayList<>();
-        // Get current year
         int currentYear = java.time.LocalDate.now().getYear();
         int startYear = currentYear - numberOfYears + 1;
 
         String sql = "SELECT strftime('%Y', " + COL_TRANS_DATE + ") as year, " +
-                "SUM(" + COL_TRANS_QUANTITY + "), " +
-                "SUM(" + COL_TRANS_AMOUNT + ") " +
+                "SUM(CAST(" + COL_TRANS_QUANTITY + " as REAL)), " +
+                "SUM(CAST(" + COL_TRANS_AMOUNT + " as REAL)) " +
                 "FROM " + MILK_TRANSACTION_TABLE + " " +
                 "WHERE " + COL_TRANS_SESSION + " NOT LIKE 'Payment%' " +
                 "AND strftime('%Y', " + COL_TRANS_DATE + ") >= ? " +
@@ -430,7 +339,7 @@ public class DailyTransactionDAO {
             String yearStr = c.getString(0);
             if (yearStr != null) {
                 try {
-                    list.add(new YearlyReportItem(Integer.parseInt(yearStr), c.getDouble(1), c.getDouble(2)));
+                    list.add(new YearlyReportItem(Integer.parseInt(yearStr), getBigDecimal(c, 1), getBigDecimal(c, 2)));
                 } catch (NumberFormatException e) { }
             }
         }
@@ -440,22 +349,10 @@ public class DailyTransactionDAO {
 
     public static class CustomerSalesItem {
         public String customerName;
-        public double totalMilk;
-        public double totalSpent;
+        public BigDecimal totalMilk;
+        public BigDecimal totalSpent;
 
-        /**
-        * Executes the {@code CustomerSalesItem} operation.
-        * <p>
-        * Handles specific domain logic pertaining to this component's responsibility. Data input
-        * is processed and state mutations or callbacks are executed locally.
-        * </p>
-        *
-        * @param n standard parameter provided by caller layer.
-        * @param m standard parameter provided by caller layer.
-        * @param s standard parameter provided by caller layer.
-        * @return the resulting {@code public} payload.
-        */
-        public CustomerSalesItem(String n, double m, double s) {
+        public CustomerSalesItem(String n, BigDecimal m, BigDecimal s) {
             customerName = n;
             totalMilk = m;
             totalSpent = s;
@@ -464,22 +361,10 @@ public class DailyTransactionDAO {
 
     public static class YearlyReportItem {
         public int year;
-        public double totalMilk;
-        public double totalRevenue;
+        public BigDecimal totalMilk;
+        public BigDecimal totalRevenue;
 
-        /**
-        * Executes the {@code YearlyReportItem} operation.
-        * <p>
-        * Handles specific domain logic pertaining to this component's responsibility. Data input
-        * is processed and state mutations or callbacks are executed locally.
-        * </p>
-        *
-        * @param y standard parameter provided by caller layer.
-        * @param m standard parameter provided by caller layer.
-        * @param r standard parameter provided by caller layer.
-        * @return the resulting {@code public} payload.
-        */
-        public YearlyReportItem(int y, double m, double r) {
+        public YearlyReportItem(int y, BigDecimal m, BigDecimal r) {
             year = y;
             totalMilk = m;
             totalRevenue = r;

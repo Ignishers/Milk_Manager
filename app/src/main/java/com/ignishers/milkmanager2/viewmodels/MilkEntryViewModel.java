@@ -84,7 +84,7 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
         executor.execute(() -> {
             com.ignishers.milkmanager2.models.Customer customer = customerDao.getCustomer(String.valueOf(customerId));
             if (customer != null) {
-                double quantity = customer.defaultQuantity > 0 ? customer.defaultQuantity : 1.0;
+                double quantity = customer.defaultQuantity.doubleValue() > 0 ? customer.defaultQuantity.doubleValue() : 1.0;
                 double rate = rateDao.getRateForDate(LocalDate.now().toString());
                 double amount = (quantity * rate);
 
@@ -100,14 +100,14 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                         customerId,
                         LocalDate.now().toString(),
                         session,
-                        quantity,
-                        amount,
+                        java.math.BigDecimal.valueOf(quantity),
+                        java.math.BigDecimal.valueOf(amount),
                         LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                         null,
                         "Regular" // Default Button = Regular
                 );
                 dao.insert(entry);
-                customerDao.updateCustomerDue(customerId, amount);
+                customerDao.updateCustomerDue(customerId, java.math.BigDecimal.valueOf(amount));
                 entryAdded.postValue(true);
             }
         });
@@ -141,14 +141,14 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                     customerId,
                     dateStr,
                     session,
-                    quantity,
-                    amount,
+                    java.math.BigDecimal.valueOf(quantity),
+                    java.math.BigDecimal.valueOf(amount),
                     LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                     null,
                     "Extra" // Manual Entry = Extra
             );
             dao.insert(entry);
-            customerDao.updateCustomerDue(customerId, amount);
+            customerDao.updateCustomerDue(customerId, java.math.BigDecimal.valueOf(amount));
             entryAdded.postValue(true);
         });
     }
@@ -166,7 +166,7 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
         executor.execute(() -> {
             com.ignishers.milkmanager2.models.Customer customer = customerDao.getCustomer(String.valueOf(customerId));
             if (customer != null) {
-                double quantity = customer.defaultQuantity > 0 ? customer.defaultQuantity : 1.0;
+                double quantity = customer.defaultQuantity.doubleValue() > 0 ? customer.defaultQuantity.doubleValue() : 1.0;
                 double rate = rateDao.getRateForDate(LocalDate.now().toString());
                 double amount = (quantity * rate); 
 
@@ -174,14 +174,14 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                         customerId,
                         LocalDate.now().toString(),
                         "Evening",
-                        quantity,
-                        amount,
+                        java.math.BigDecimal.valueOf(quantity),
+                        java.math.BigDecimal.valueOf(amount),
                         LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                         null,
                         "Regular" // Night Entry (Scheduled) = Regular
                 );
                 dao.insert(entry);
-                customerDao.updateCustomerDue(customerId, amount);
+                customerDao.updateCustomerDue(customerId, java.math.BigDecimal.valueOf(amount));
                 entryAdded.postValue(true);
             }
         });
@@ -205,15 +205,15 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                     customerId,
                     LocalDate.now().toString(),
                     sessionType,
-                    quantity,
-                    amount,
+                    java.math.BigDecimal.valueOf(quantity),
+                    java.math.BigDecimal.valueOf(amount),
                     LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                     null,
                     "Extra" // Generic Add Entry = Extra (usually from manual flows)
             );
 
             dao.insert(entry);
-            customerDao.updateCustomerDue(customerId, amount);
+            customerDao.updateCustomerDue(customerId, java.math.BigDecimal.valueOf(amount));
             entryAdded.postValue(true);
 
         });
@@ -236,14 +236,14 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                     customerId,
                     dateStr,
                     "Payment", // Session
-                    0.0,
-                    amount,
+                    java.math.BigDecimal.ZERO,
+                    java.math.BigDecimal.valueOf(amount),
                     LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                     method // Payment Mode
             );
             dao.insert(entry);
             // DECREASE due by amount
-            customerDao.updateCustomerDue(customerId, -amount);
+            customerDao.updateCustomerDue(customerId, java.math.BigDecimal.valueOf(-amount));
             entryAdded.postValue(true);
         });
     }
@@ -319,14 +319,14 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
                         customerId,
                         LocalDate.now().toString(),
                         session,
-                        quantity,
-                        amount,
+                        java.math.BigDecimal.valueOf(quantity),
+                        java.math.BigDecimal.valueOf(amount),
                         LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                         null,
                         "Extra" // Quick Entry (Dropdown) = Extra
                 );
                 dao.insert(entry);
-                customerDao.updateCustomerDue(customerId, amount);
+                customerDao.updateCustomerDue(customerId, java.math.BigDecimal.valueOf(amount));
                 entryAdded.postValue(true);
             }
         });
@@ -339,10 +339,10 @@ public LiveData<Boolean> getEntryAdded() { return entryAdded; }
      */
     public void deleteTodaySession(long customerId, String session) {
         executor.execute(() -> {
-            double deletedAmount = dao.deleteTodaySession(customerId, session);
-            if (deletedAmount > 0) {
+            java.math.BigDecimal deletedAmount = dao.deleteTodaySession(customerId, session);
+            if (deletedAmount != null && deletedAmount.compareTo(java.math.BigDecimal.ZERO) > 0) {
                 // Reverse the due
-                customerDao.updateCustomerDue(customerId, -deletedAmount);
+                customerDao.updateCustomerDue(customerId, deletedAmount.negate());
             }
             entryAdded.postValue(true); // Trigger UI refresh
         });

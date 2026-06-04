@@ -152,7 +152,7 @@ public class SalesReportActivity extends AppCompatActivity {
         List<SimplePieView.PieItem> pieData = new ArrayList<>();
         for (DailyTransactionDAO.CustomerSalesItem c : customers) {
             String name = c.customerName != null ? c.customerName : "Unknown";
-            pieData.add(new SimplePieView.PieItem(name, (float) c.totalSpent));
+            pieData.add(new SimplePieView.PieItem(name, c.totalSpent.floatValue()));
         }
         chartCustomerPie.setData(pieData);
         
@@ -160,7 +160,7 @@ public class SalesReportActivity extends AppCompatActivity {
         List<DailyTransactionDAO.YearlyReportItem> yearly = dao.getYearlyRevenueTrend(5);
         List<SimpleBarView.BarItem> barData = new ArrayList<>();
         for (DailyTransactionDAO.YearlyReportItem y : yearly) {
-            barData.add(new SimpleBarView.BarItem(String.valueOf(y.year), (int) y.totalRevenue));
+            barData.add(new SimpleBarView.BarItem(String.valueOf(y.year), y.totalRevenue.intValue()));
         }
         chartYearlyTrend.setData(barData);
         
@@ -172,7 +172,7 @@ public class SalesReportActivity extends AppCompatActivity {
         String[] shortMonths = {"", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         for (DailyTransactionDAO.MonthlyReportItem m : monthly) {
             if (m.month >= 1 && m.month <= 12) {
-                monthBarData.add(new SimpleBarView.BarItem(shortMonths[m.month], (int) m.amount));
+                monthBarData.add(new SimpleBarView.BarItem(shortMonths[m.month], m.amount.intValue()));
             }
         }
         chartMonthlyTrend.setData(monthBarData);

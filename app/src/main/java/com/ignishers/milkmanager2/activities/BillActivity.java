@@ -401,18 +401,18 @@ public class BillActivity extends AppCompatActivity {
             }
 
             // --- Calculation Logic ---
-            double billAmount = 0;
-            double billPaid = 0;
+            java.math.BigDecimal billAmount = java.math.BigDecimal.ZERO;
+            java.math.BigDecimal billPaid = java.math.BigDecimal.ZERO;
             for (com.ignishers.milkmanager2.models.DailyTransaction t : transactions) {
-                if (t.getSession().startsWith("Payment")) billPaid += t.getAmount();
-                else billAmount += t.getAmount();
+                if (t.getSession().startsWith("Payment")) billPaid = billPaid.add(t.getAmount());
+                else billAmount = billAmount.add(t.getAmount());
             }
-            double netChangeList = billAmount - billPaid;
+            java.math.BigDecimal netChangeList = billAmount.subtract(billPaid);
 
             LocalDate postStart = end.plusDays(1);
             LocalDate postEnd = LocalDate.now();
-            double netChangePost = 0;
-            double postPayments = 0;
+            java.math.BigDecimal netChangePost = java.math.BigDecimal.ZERO;
+            java.math.BigDecimal postPayments = java.math.BigDecimal.ZERO;
             
             if (!postStart.isAfter(postEnd)) {
                 List<com.ignishers.milkmanager2.models.DailyTransaction> postTransactions = 
@@ -420,20 +420,20 @@ public class BillActivity extends AppCompatActivity {
                 
                 for (com.ignishers.milkmanager2.models.DailyTransaction t : postTransactions) {
                     if (t.getSession().startsWith("Payment")) {
-                        postPayments += t.getAmount();
-                        netChangePost -= t.getAmount();
+                        postPayments = postPayments.add(t.getAmount());
+                        netChangePost = netChangePost.subtract(t.getAmount());
                     } else {
-                        netChangePost += t.getAmount();
+                        netChangePost = netChangePost.add(t.getAmount());
                     }
                 }
             }
 
-            double openingBalance = customer.currentDue - netChangeList - netChangePost;
-            double closingBalanceOfBill = openingBalance + netChangeList;
-            double headerTotalDue;
+            java.math.BigDecimal openingBalance = customer.currentDue.subtract(netChangeList).subtract(netChangePost);
+            java.math.BigDecimal closingBalanceOfBill = openingBalance.add(netChangeList);
+            java.math.BigDecimal headerTotalDue;
             
             if (isLastMonthMode) {
-                headerTotalDue = closingBalanceOfBill - postPayments;
+                headerTotalDue = closingBalanceOfBill.subtract(postPayments);
             } else {
                 headerTotalDue = closingBalanceOfBill;
             }
@@ -445,7 +445,7 @@ public class BillActivity extends AppCompatActivity {
                 transactions.sort((t1, t2) -> t1.getDate().compareTo(t2.getDate()));
             }
             
-            File pdfFile = new com.ignishers.milkmanager2.utils.PDFGenerator(this, customer, transactions, openingBalance, headerTotalDue).generate(fileName);
+            File pdfFile = new com.ignishers.milkmanager2.utils.PDFGenerator(this, customer, transactions, openingBalance.doubleValue(), headerTotalDue.doubleValue()).generate(fileName);
             
             if (pdfFile != null && pdfFile.exists()) {
                 if (action == ActionType.DOWNLOAD) {

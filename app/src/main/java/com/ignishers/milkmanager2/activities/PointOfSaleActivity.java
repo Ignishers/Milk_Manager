@@ -241,7 +241,7 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
         inputMorning.setHint("e.g. 1.5");
         // Show current value — use session qty if explicitly set (even if 0), else legacy qty
         inputMorning.setText(String.format("%.2f",
-                customer.morningQtySet ? customer.defaultQtyMorning : customer.defaultQuantity));
+                customer.morningQtySet ? customer.defaultQtyMorning.doubleValue() : customer.defaultQuantity.doubleValue()));
         root.addView(inputMorning);
 
         // --- Evening field ---
@@ -260,7 +260,7 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
                 | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
         inputEvening.setHint("e.g. 1.0");
         inputEvening.setText(String.format("%.2f",
-                customer.eveningQtySet ? customer.defaultQtyEvening : customer.defaultQuantity));
+                customer.eveningQtySet ? customer.defaultQtyEvening.doubleValue() : customer.defaultQuantity.doubleValue()));
         root.addView(inputEvening);
 
         // When unit changes → update labels and clear fields so user re-enters
@@ -297,17 +297,17 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
                                 android.widget.Toast.LENGTH_LONG).show();
                         return;
                     }
-                    newMorning = (rawMorning < 0) ? customer.defaultQtyMorning : rawMorning / milkRate;
-                    newEvening = (rawEvening < 0) ? customer.defaultQtyEvening : rawEvening / milkRate;
+                    newMorning = (rawMorning < 0) ? customer.defaultQtyMorning.doubleValue() : rawMorning / milkRate;
+                    newEvening = (rawEvening < 0) ? customer.defaultQtyEvening.doubleValue() : rawEvening / milkRate;
                 } else {
-                    newMorning = (rawMorning < 0) ? customer.defaultQtyMorning : rawMorning;
-                    newEvening = (rawEvening < 0) ? customer.defaultQtyEvening : rawEvening;
+                    newMorning = (rawMorning < 0) ? customer.defaultQtyMorning.doubleValue() : rawMorning;
+                    newEvening = (rawEvening < 0) ? customer.defaultQtyEvening.doubleValue() : rawEvening;
                 }
 
-                customerDAO.updateCustomerMorningQty(customer.id, newMorning);
-                customerDAO.updateCustomerEveningQty(customer.id, newEvening);
-                customer.defaultQtyMorning = newMorning;
-                customer.defaultQtyEvening = newEvening;
+                customerDAO.updateCustomerMorningQty(customer.id, java.math.BigDecimal.valueOf(newMorning));
+                customerDAO.updateCustomerEveningQty(customer.id, java.math.BigDecimal.valueOf(newEvening));
+                customer.defaultQtyMorning = java.math.BigDecimal.valueOf(newMorning);
+                customer.defaultQtyEvening = java.math.BigDecimal.valueOf(newEvening);
 
                 String morningDisplay = String.format("%.2fL", newMorning);
                 String eveningDisplay = String.format("%.2fL", newEvening);
@@ -448,7 +448,7 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
     private void refreshUI() {
         tvName.setText("Name: " + customer.name);
         tvNumber.setText("Mobile: " + customer.mobile);
-        tvDues.setText(String.format("Dues: %.2f", customer.currentDue));
+        tvDues.setText(String.format("Dues: %.2f", customer.currentDue.doubleValue()));
 
         updateMonthTotal();
         loadTodayEntries();
@@ -476,7 +476,7 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
     */
     private void updateMonthTotal() {
         LocalDateTime now = LocalDateTime.now();
-        double currentMonthDue = 0;
+        java.math.BigDecimal currentMonthDue = java.math.BigDecimal.ZERO;
         String month = String.format("%02d", now.getMonthValue());
         
         List<DailyTransaction> transactions =
@@ -489,18 +489,18 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
         if (transactions != null) {
             for (DailyTransaction t : transactions) {
                 if (t.getSession().startsWith("Payment")) continue;
-                currentMonthDue += t.getAmount();
+                currentMonthDue = currentMonthDue.add(t.getAmount());
             }
         }
         
-        double lastMonthDue = customer.currentDue - currentMonthDue;
+        java.math.BigDecimal lastMonthDue = customer.currentDue.subtract(currentMonthDue);
         
         // Update UI
-        tvMonthDues.setText(String.format("Last Month Due: %.2f", lastMonthDue));
+        tvMonthDues.setText(String.format("Last Month Due: %.2f", lastMonthDue.doubleValue()));
         
         TextView tvCurrentMonth = findViewById(R.id.tvCurrentMonthTotal);
         if (tvCurrentMonth != null) { 
-            tvCurrentMonth.setText(String.format("Current Month Bill: %.2f", currentMonthDue));
+            tvCurrentMonth.setText(String.format("Current Month Bill: %.2f", currentMonthDue.doubleValue()));
         }
     }
 
@@ -536,7 +536,7 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
                     if (transaction.getSession().startsWith("Payment")) {
                          customerDAO.updateCustomerDue(customer.id, transaction.getAmount());
                     } else {
-                        customerDAO.updateCustomerDue(customer.id, -transaction.getAmount());
+                        customerDAO.updateCustomerDue(customer.id, transaction.getAmount().negate());
                     }
                     
                     dailyTransactionDAO.delete(transaction.getTransactionId());
@@ -544,7 +544,7 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
                     customer = customerDAO.getCustomer(String.valueOf(customer.id));
                     updateMonthTotal();
                     if (customer != null) {
-                        tvDues.setText(String.format("Dues: %.2f", customer.currentDue));
+                        tvDues.setText(String.format("Dues: %.2f", customer.currentDue.doubleValue()));
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -558,7 +558,7 @@ public class PointOfSaleActivity extends AppCompatActivity implements MilkEntryF
             customer = customerDAO.getCustomer(String.valueOf(customer.id));
             updateMonthTotal();
             if (customer != null) {
-                tvDues.setText(String.format("Dues: %.2f", customer.currentDue));
+                tvDues.setText(String.format("Dues: %.2f", customer.currentDue.doubleValue()));
             }
         });
     }

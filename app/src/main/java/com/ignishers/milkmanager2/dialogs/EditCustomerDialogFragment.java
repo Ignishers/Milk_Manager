@@ -203,10 +203,10 @@ public class EditCustomerDialogFragment extends BottomSheetDialogFragment {
 
             // Update name, mobile, legacy defaultQty (avg), and current due
             double avgQty = (morningL + eveningL) / 2.0;
-            customerDao.updateCustomerDetails(customerId, name, mobile, avgQty, due);
+            customerDao.updateCustomerDetails(customerId, name, mobile, java.math.BigDecimal.valueOf(avgQty), java.math.BigDecimal.valueOf(due));
             // Update morning + evening separately
-            customerDao.updateCustomerMorningQty(customerId, morningL);
-            customerDao.updateCustomerEveningQty(customerId, eveningL);
+            customerDao.updateCustomerMorningQty(customerId, java.math.BigDecimal.valueOf(morningL));
+            customerDao.updateCustomerEveningQty(customerId, java.math.BigDecimal.valueOf(eveningL));
 
             Toast.makeText(requireContext(),
                     String.format("Updated! Morning: %.2fL | Evening: %.2fL", morningL, eveningL),

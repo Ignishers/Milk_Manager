@@ -103,8 +103,8 @@ public class AutoEntryReceiver extends BroadcastReceiver {
             }
 
             double quantity = session.equals("Morning")
-                    ? (customer.defaultQtyMorning > 0 ? customer.defaultQtyMorning : 0)
-                    : (customer.defaultQtyEvening > 0 ? customer.defaultQtyEvening : 0);
+                    ? (customer.defaultQtyMorning.doubleValue() > 0 ? customer.defaultQtyMorning.doubleValue() : 0)
+                    : (customer.defaultQtyEvening.doubleValue() > 0 ? customer.defaultQtyEvening.doubleValue() : 0);
 
             if (quantity <= 0) {
                 Log.d(TAG, "Skipping " + customer.name + " — zero quantity for " + session);
@@ -117,14 +117,14 @@ public class AutoEntryReceiver extends BroadcastReceiver {
                     customer.id,
                     today,
                     session,
-                    quantity,
-                    amount,
+                    java.math.BigDecimal.valueOf(quantity),
+                    java.math.BigDecimal.valueOf(amount),
                     timestamp,
                     null,       // paymentMode
                     "Regular"   // milkType: Regular = auto-entry, can be deleted by POS buttons
             );
             transactionDAO.insert(entry);
-            customerDAO.updateCustomerDue(customer.id, amount);
+            customerDAO.updateCustomerDue(customer.id, java.math.BigDecimal.valueOf(amount));
             count++;
         }
 

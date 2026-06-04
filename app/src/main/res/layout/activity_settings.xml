@@ -39,12 +39,12 @@
             android:padding="16dp">
 
             <!-- ══════════════════════════════════════════════
-                 SECTION: Google Drive Backup & Restore
+                 SECTION: Export & Sync Settings
                  ════════════════════════════════════════════== -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Data Backup"
+                android:text="Data Export"
                 android:textSize="12sp"
                 android:textAllCaps="true"
                 android:textColor="@color/primary"
@@ -65,9 +65,9 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Google Account row -->
+                    <!-- Export row -->
                     <LinearLayout
-                        android:id="@+id/rowGoogleAccount"
+                        android:id="@+id/rowExportCsv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -77,7 +77,7 @@
                         <ImageView
                             android:layout_width="36dp"
                             android:layout_height="36dp"
-                            android:src="@android:drawable/btn_star_big_on"
+                            android:src="@android:drawable/ic_menu_save"
                             app:tint="@color/primary"
                             android:layout_marginEnd="14dp" />
 
@@ -90,144 +90,29 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Google Account"
+                                android:text="Export Data to CSV"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
                                 android:textColor="#212121"/>
 
                             <TextView
-                                android:id="@+id/tvGoogleAccountStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Not signed in"
+                                android:text="Save database as Excel files"
                                 android:textSize="12sp"
                                 android:textColor="#757575"/>
                         </LinearLayout>
 
                         <Button
-                            android:id="@+id/btnGoogleSignIn"
+                            android:id="@+id/btnExportCsv"
                             android:layout_width="wrap_content"
                             android:layout_height="36dp"
-                            android:text="Sign In"
+                            android:text="Export"
                             android:textSize="12sp"
                             android:insetTop="0dp"
                             android:insetBottom="0dp"
                             android:backgroundTint="@color/primary"
                             android:textColor="@android:color/white" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#EEEEEE"
-                        android:layout_marginBottom="14dp"/>
-
-                    <!-- Backup row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingBottom="14dp">
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@android:drawable/ic_menu_upload"
-                            app:tint="#1565C0"
-                            android:layout_marginEnd="14dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Backup to Google Drive"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                android:textColor="#212121"/>
-
-                            <TextView
-                                android:id="@+id/tvLastBackup"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="No backup yet"
-                                android:textSize="12sp"
-                                android:textColor="#757575"/>
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/btnBackup"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:text="Backup"
-                            android:textSize="12sp"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"
-                            android:backgroundTint="#1565C0"
-                            android:textColor="@android:color/white"
-                            android:enabled="false" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#EEEEEE"
-                        android:layout_marginBottom="14dp"/>
-
-                    <!-- Restore row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@android:drawable/ic_menu_revert"
-                            app:tint="#6A1B9A"
-                            android:layout_marginEnd="14dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Restore from Google Drive"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                android:textColor="#212121"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Replaces all current data"
-                                android:textSize="12sp"
-                                android:textColor="#B71C1C"/>
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/btnRestore"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:text="Restore"
-                            android:textSize="12sp"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"
-                            android:backgroundTint="#6A1B9A"
-                            android:textColor="@android:color/white"
-                            android:enabled="false" />
 
                     </LinearLayout>
 

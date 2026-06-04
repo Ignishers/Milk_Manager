@@ -362,7 +362,7 @@ public class DashboardActivity extends AppCompatActivity
         Customer freshCust = customerDAO.getCustomer(String.valueOf(customer.id));
         if (freshCust == null) return;
 
-        if (Math.abs(freshCust.currentDue) > 0.01) {
+        if (freshCust.currentDue.abs().compareTo(java.math.BigDecimal.valueOf(0.01)) > 0) {
             new AlertDialog.Builder(this)
                     .setTitle("Cannot Delete")
                     .setMessage("Customer has pending dues (" + freshCust.currentDue + "). Please clear dues before deleting.")

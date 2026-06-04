@@ -181,7 +181,7 @@ public class AddCustomerDialogFragment extends BottomSheetDialogFragment {
             long id = customerDao.insertCustomer(
                     name, mobile,
                     routeGroupId == 0 ? null : routeGroupId,
-                    morningQtyL, eveningQtyL, due);
+                    java.math.BigDecimal.valueOf(morningQtyL), java.math.BigDecimal.valueOf(eveningQtyL), java.math.BigDecimal.valueOf(due));
 
             if (id != -1) {
                 String morFmt = String.format("%.2fL", morningQtyL);

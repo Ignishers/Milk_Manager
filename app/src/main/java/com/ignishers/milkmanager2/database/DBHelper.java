@@ -31,7 +31,7 @@ import androidx.annotation.Nullable;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "milky_mist_db";
-    private static final int DB_VERSION = 6; // v6: per-customer auto_entry_enabled toggle
+    private static final int DB_VERSION = 7; // v7: Sync metadata (seller_id, is_synced, updated_at)
 
     // ==========================================
     // 1. ROUTE GROUP TABLE (Hierarchy) - LOOKS GOOD
@@ -105,6 +105,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_PAYMENT_DATE = "payment_date";
     public static final String COL_PAYMENT_AMOUNT = "payment_amount";
 
+    // ==========================================
+    // SYNC METADATA COLUMNS (Added in v7)
+    // ==========================================
+    public static final String COL_SYNC_SELLER_ID = "seller_id";
+    public static final String COL_SYNC_IS_SYNCED = "is_synced";
+    public static final String COL_SYNC_UPDATED_AT = "updated_at";
+
     // creating a constructor for the database helper class
     public DBHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -120,7 +127,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_ROUTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_PARENT_ROUTE_ID + " INTEGER, " +
                 COL_ROUTE_NAME + " TEXT, " +
-                COL_ROUTE_SORT_ORDER + " INTEGER DEFAULT 0" + ");";
+                COL_ROUTE_SORT_ORDER + " INTEGER DEFAULT 0, " +
+                COL_SYNC_SELLER_ID + " TEXT, " +
+                COL_SYNC_IS_SYNCED + " INTEGER DEFAULT 0, " +
+                COL_SYNC_UPDATED_AT + " INTEGER DEFAULT 0" + ");";
         db.execSQL(createRouteTable);
 
         // Creating CUSTOMER TABLE (Added FK to Route)
@@ -136,6 +146,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_CUSTOMER_SORT_ORDER + " INTEGER DEFAULT 0, " +
                 COL_CUSTOMER_AUTO_ENTRY + " INTEGER NOT NULL DEFAULT 1, " +
                 COL_CUSTOMER_CURRENT_DUE + " REAL DEFAULT 0, " +
+                COL_SYNC_SELLER_ID + " TEXT, " +
+                COL_SYNC_IS_SYNCED + " INTEGER DEFAULT 0, " +
+                COL_SYNC_UPDATED_AT + " INTEGER DEFAULT 0, " +
                 // FOREIGN KEY CONSTRAINT:
                 "FOREIGN KEY(" + COL_CUST_ROUTE_ID_FK + ") REFERENCES " + ROUTE_TABLE + "(" + COL_ROUTE_ID + ")" +
                 ");";
@@ -145,7 +158,10 @@ public class DBHelper extends SQLiteOpenHelper {
         String createMilkPriceTable = "CREATE TABLE " + MILK_PRICE_TABLE + " (" +
                 COL_PRICE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_GLOBAL_PRICE_PER_LITRE + " REAL, " +
-                COL_EFFECTIVE_DATE + " TEXT" + ");";
+                COL_EFFECTIVE_DATE + " TEXT, " +
+                COL_SYNC_SELLER_ID + " TEXT, " +
+                COL_SYNC_IS_SYNCED + " INTEGER DEFAULT 0, " +
+                COL_SYNC_UPDATED_AT + " INTEGER DEFAULT 0" + ");";
         db.execSQL(createMilkPriceTable);
 
         // Creating DAILY TRANSACTION TABLE (Added FK to Customer)
@@ -159,6 +175,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_TRANS_TIMESTAMP + " TEXT, " +
                 COL_TRANS_PAYMENT_MODE + " TEXT, " +
                 COL_TRANS_MILK_TYPE + " TEXT, " + // NEW COLUMN
+                COL_SYNC_SELLER_ID + " TEXT, " +
+                COL_SYNC_IS_SYNCED + " INTEGER DEFAULT 0, " +
+                COL_SYNC_UPDATED_AT + " INTEGER DEFAULT 0, " +
                 // FOREIGN KEY CONSTRAINT: Ensure customer exists before adding transaction
                 "FOREIGN KEY(" + COL_TRANS_CUSTOMER_ID_FK + ") REFERENCES " + CUSTOMER_TABLE + "(" + COL_CUSTOMER_ID + ") ON DELETE CASCADE" +
                 ");";
@@ -170,6 +189,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_PAYMENT_CUSTOMER_ID_FK + " INTEGER, " + // The link column
                 COL_PAYMENT_DATE + " TEXT, " +
                 COL_PAYMENT_AMOUNT + " REAL, " +
+                COL_SYNC_SELLER_ID + " TEXT, " +
+                COL_SYNC_IS_SYNCED + " INTEGER DEFAULT 0, " +
+                COL_SYNC_UPDATED_AT + " INTEGER DEFAULT 0, " +
                 // FOREIGN KEY CONSTRAINT:
                 "FOREIGN KEY(" + COL_PAYMENT_CUSTOMER_ID_FK + ") REFERENCES " + CUSTOMER_TABLE + "(" + COL_CUSTOMER_ID + ") ON DELETE CASCADE" +
                 ");";
@@ -258,6 +280,15 @@ public class DBHelper extends SQLiteOpenHelper {
         if (oldVersion < 6) {
             safeExec(db, "ALTER TABLE " + CUSTOMER_TABLE
                     + " ADD COLUMN " + COL_CUSTOMER_AUTO_ENTRY + " INTEGER DEFAULT 1;", "v6-auto-entry");
+        }
+
+        if (oldVersion < 7) {
+            String[] tables = {ROUTE_TABLE, CUSTOMER_TABLE, MILK_PRICE_TABLE, MILK_TRANSACTION_TABLE, PAYMENT_TABLE};
+            for (String table : tables) {
+                safeExec(db, "ALTER TABLE " + table + " ADD COLUMN " + COL_SYNC_SELLER_ID + " TEXT;", "v7-seller-" + table);
+                safeExec(db, "ALTER TABLE " + table + " ADD COLUMN " + COL_SYNC_IS_SYNCED + " INTEGER DEFAULT 0;", "v7-sync-" + table);
+                safeExec(db, "ALTER TABLE " + table + " ADD COLUMN " + COL_SYNC_UPDATED_AT + " INTEGER DEFAULT 0;", "v7-updated-" + table);
+            }
         }
     }
 
