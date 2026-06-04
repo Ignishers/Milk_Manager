@@ -14,8 +14,10 @@ import java.util.List;
 
 public class DailyTransactionDAO {
     private final SQLiteDatabase db;
+    private final Context context;
 
     public DailyTransactionDAO(Context context) {
+        this.context = context;
         db = new DBHelper(context).getWritableDatabase();
     }
 
@@ -39,6 +41,14 @@ public class DailyTransactionDAO {
         cv.put(COL_TRANS_TIMESTAMP, transaction.getTimestamp());
         cv.put(COL_TRANS_PAYMENT_MODE, transaction.getPaymentMode()); 
         cv.put(COL_TRANS_MILK_TYPE, transaction.getMilkType()); 
+
+        com.ignishers.milkmanager2.managers.SessionManager session = new com.ignishers.milkmanager2.managers.SessionManager(context);
+        if (session.isLoggedIn()) {
+            cv.put(COL_SYNC_SELLER_ID, session.getSellerId());
+        }
+        cv.put(COL_SYNC_IS_SYNCED, 0);
+        cv.put(COL_SYNC_UPDATED_AT, System.currentTimeMillis());
+
         return db.insert(MILK_TRANSACTION_TABLE, null, cv);
     }
 

@@ -25,14 +25,11 @@ import java.time.LocalDate;
  */
 public class MilkRateDAO {
 
-    private final SQLiteDatabase db;    /**
-     * Constructs a new {@code MilkRateDAO} instance.
-     * <p>
-     * Initializes the object's state and prepares it for use within the application context.
-     * Data dependencies required for the entity are injected here.
-     * </p>
-     */
+    private final SQLiteDatabase db;
+    private final Context context;
+
     public MilkRateDAO(Context context) {
+        this.context = context;
         db = new DBHelper(context).getWritableDatabase();
     }
 
@@ -50,6 +47,14 @@ public class MilkRateDAO {
         ContentValues cv = new ContentValues();
         cv.put(COL_GLOBAL_PRICE_PER_LITRE, rate);
         cv.put(COL_EFFECTIVE_DATE, effectiveDate);
+
+        com.ignishers.milkmanager2.managers.SessionManager session = new com.ignishers.milkmanager2.managers.SessionManager(context);
+        if (session.isLoggedIn()) {
+            cv.put(COL_SYNC_SELLER_ID, session.getSellerId());
+        }
+        cv.put(COL_SYNC_IS_SYNCED, 0);
+        cv.put(COL_SYNC_UPDATED_AT, System.currentTimeMillis());
+
         db.insert(MILK_PRICE_TABLE, null, cv);
     }
 

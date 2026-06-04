@@ -26,14 +26,11 @@ import java.util.List;
  */
 public class RouteGroupDAO {
 
-    private SQLiteDatabase db;    /**
-     * Constructs a new {@code RouteGroupDAO} instance.
-     * <p>
-     * Initializes the object's state and prepares it for use within the application context.
-     * Data dependencies required for the entity are injected here.
-     * </p>
-     */
+    private SQLiteDatabase db;
+    private Context context;
+
     public RouteGroupDAO(Context context) {
+        this.context = context;
         db = new DBHelper(context).getWritableDatabase();
     }
 
@@ -89,6 +86,14 @@ public class RouteGroupDAO {
         // Assign sort_order = count of siblings
         int count = getGroupCountUnder(parentId == null ? 0 : parentId);
         cv.put("sort_order", count);
+
+        com.ignishers.milkmanager2.managers.SessionManager session = new com.ignishers.milkmanager2.managers.SessionManager(context);
+        if (session.isLoggedIn()) {
+            cv.put(DBHelper.COL_SYNC_SELLER_ID, session.getSellerId());
+        }
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
+
         long result = db.insert("route_group", null, cv);
         return result != -1;
     }
@@ -107,10 +112,14 @@ public class RouteGroupDAO {
     public void swapSortOrder(long groupId1, int order1, long groupId2, int order2) {
         ContentValues cv1 = new ContentValues();
         cv1.put("sort_order", order2);
+        cv1.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv1.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("route_group", cv1, "group_id = ?", new String[]{String.valueOf(groupId1)});
 
         ContentValues cv2 = new ContentValues();
         cv2.put("sort_order", order1);
+        cv2.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv2.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("route_group", cv2, "group_id = ?", new String[]{String.valueOf(groupId2)});
     }
 

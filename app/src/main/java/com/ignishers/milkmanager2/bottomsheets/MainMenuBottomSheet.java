@@ -29,6 +29,9 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
     public interface OnMenuItemClickListener {
         void onSalesRecordClick();
         void onMilkPriceClick();
+        void onCloudSyncClick();
+        void onSyncNowClick();
+        void onBackupCsvClick();
         void onSettingsClick();
     }
 
@@ -82,6 +85,9 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
         View btnSales = view.findViewById(R.id.btnSalesRecord);
         View btnPrice = view.findViewById(R.id.btnMilkPrice);
         View btnSettings = view.findViewById(R.id.btnSettings);
+        View btnCloudSync = view.findViewById(R.id.btnCloudSync);
+        View btnSyncNow = view.findViewById(R.id.btnSyncNow);
+        View btnBackupCsv = view.findViewById(R.id.btnBackupCsv);
 
         btnSales.setOnClickListener(v -> {
             if (listener != null) listener.onSalesRecordClick();
@@ -93,6 +99,27 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
             dismiss();
         });
 
+        if (btnCloudSync != null) {
+            btnCloudSync.setOnClickListener(v -> {
+                if (listener != null) listener.onCloudSyncClick();
+                dismiss();
+            });
+        }
+
+        if (btnSyncNow != null) {
+            btnSyncNow.setOnClickListener(v -> {
+                if (listener != null) listener.onSyncNowClick();
+                dismiss();
+            });
+        }
+
+        if (btnBackupCsv != null) {
+            btnBackupCsv.setOnClickListener(v -> {
+                if (listener != null) listener.onBackupCsvClick();
+                dismiss();
+            });
+        }
+
         btnSettings.setOnClickListener(v -> {
             if (listener != null) listener.onSettingsClick();
             dismiss();
@@ -101,7 +128,10 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
         // Staggered Animation
         animateItem(btnSales, 100);
         animateItem(btnPrice, 200);
-        animateItem(btnSettings, 300);
+        if (btnCloudSync != null) animateItem(btnCloudSync, 300);
+        if (btnSyncNow != null) animateItem(btnSyncNow, 400);
+        if (btnBackupCsv != null) animateItem(btnBackupCsv, 500);
+        animateItem(btnSettings, 600);
     }
 
     /**

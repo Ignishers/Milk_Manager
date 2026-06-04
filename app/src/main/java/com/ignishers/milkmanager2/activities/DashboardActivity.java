@@ -64,6 +64,8 @@ public class DashboardActivity extends AppCompatActivity
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
 
+        com.ignishers.milkmanager2.network.SyncScheduler.setupPeriodicSync(this);
+
         dbHelper = new DBHelper(this);
         groupDAO = new RouteGroupDAO(this);
         groupDAO.ensureRootRouteExists();
@@ -445,6 +447,30 @@ public class DashboardActivity extends AppCompatActivity
             }
             @Override public void onMilkPriceClick() {
                 new SetMilkPriceDialog().show(getSupportFragmentManager(), "SetPrice");
+            }
+            @Override public void onCloudSyncClick() {
+                startActivity(new Intent(DashboardActivity.this, com.ignishers.milkmanager2.activities.LoginActivity.class));
+            }
+            @Override public void onSyncNowClick() {
+                androidx.work.OneTimeWorkRequest syncRequest = new androidx.work.OneTimeWorkRequest.Builder(com.ignishers.milkmanager2.network.SyncWorker.class).build();
+                androidx.work.WorkManager.getInstance(DashboardActivity.this).enqueue(syncRequest);
+                Toast.makeText(DashboardActivity.this, "Sync Triggered in Background!", Toast.LENGTH_SHORT).show();
+            }
+            @Override public void onBackupCsvClick() {
+                com.ignishers.milkmanager2.utils.CsvExportManager.exportDatabaseToCsv(DashboardActivity.this, new com.ignishers.milkmanager2.utils.CsvExportManager.ExportCallback() {
+                    @Override
+                    public void onSuccess(java.util.ArrayList<android.net.Uri> fileUris) {
+                        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                        intent.setType("text/csv");
+                        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(Intent.createChooser(intent, "Share Database Backup"));
+                    }
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(DashboardActivity.this, "Backup Failed: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             @Override public void onSettingsClick() {
                 startActivity(new Intent(DashboardActivity.this, SettingsActivity.class));

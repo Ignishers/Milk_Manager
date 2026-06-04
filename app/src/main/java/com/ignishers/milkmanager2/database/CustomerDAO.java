@@ -13,8 +13,10 @@ import java.util.List;
 public class CustomerDAO {
 
     private final SQLiteDatabase db;
+    private final Context context;
 
     public CustomerDAO(Context context) {
+        this.context = context;
         db = new DBHelper(context).getWritableDatabase();
     }
 
@@ -87,6 +89,14 @@ public class CustomerDAO {
         } else {
             cv.put("route_id_fk", routeGroupId);
         }
+
+        com.ignishers.milkmanager2.managers.SessionManager session = new com.ignishers.milkmanager2.managers.SessionManager(context);
+        if (session.isLoggedIn()) {
+            cv.put(DBHelper.COL_SYNC_SELLER_ID, session.getSellerId());
+        }
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
+
         return db.insert("customer", null, cv);
     }
 
@@ -136,6 +146,8 @@ public class CustomerDAO {
         cv.put("customer_mobile", mobile);
         cv.put("default_quantity", defaultQty.toPlainString());
         cv.put("customer_due_balance", currentDue.toPlainString());
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
     }
 
@@ -146,6 +158,8 @@ public class CustomerDAO {
             BigDecimal newDue = c.currentDue.add(amountToAdd);
             ContentValues cv = new ContentValues();
             cv.put("customer_due_balance", newDue.toPlainString());
+            cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+            cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
             db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
         }
     }
@@ -155,24 +169,32 @@ public class CustomerDAO {
         cv.put("default_quantity", newQty.toPlainString());
         cv.put("default_qty_morning", newQty.toPlainString());
         cv.put("default_qty_evening", newQty.toPlainString());
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
     }
 
     public void updateCustomerMorningQty(long customerId, BigDecimal newQty) {
         ContentValues cv = new ContentValues();
         cv.put("default_qty_morning", newQty.toPlainString());
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
     }
 
     public void updateCustomerEveningQty(long customerId, BigDecimal newQty) {
         ContentValues cv = new ContentValues();
         cv.put("default_qty_evening", newQty.toPlainString());
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
     }
 
     public void updateCustomerSortOrder(long customerId, int sortOrder) {
         ContentValues cv = new ContentValues();
         cv.put("sort_order", sortOrder);
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
     }
 
@@ -200,6 +222,8 @@ public class CustomerDAO {
     public void updateCustomerRoute(long customerId, long newRouteId) {
         ContentValues cv = new ContentValues();
         cv.put("route_id_fk", newRouteId);
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
     }
 
@@ -210,6 +234,8 @@ public class CustomerDAO {
     public void updateCustomerAutoEntry(long customerId, boolean enabled) {
         ContentValues cv = new ContentValues();
         cv.put("auto_entry_enabled", enabled ? 1 : 0);
+        cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
+        cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
         db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
     }
 }

@@ -36,6 +36,7 @@
 
         <activity android:name=".activities.BillActivity" android:exported="false" />
         <activity android:name=".activities.SettingsActivity" android:exported="false" />
+        <activity android:name=".activities.LoginActivity" android:exported="false" />
 
         
         <provider
