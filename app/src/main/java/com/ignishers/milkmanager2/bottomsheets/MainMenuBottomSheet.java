@@ -31,6 +31,7 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
         void onMilkPriceClick();
         void onCloudSyncClick();
         void onSyncNowClick();
+        void onSyncDiagnosticsClick();
         void onBackupCsvClick();
         void onSettingsClick();
     }
