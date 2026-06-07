@@ -177,7 +177,9 @@ public class MonthSummaryDialog extends DialogFragment {
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                // Do nothing
+            }
         };
 
         spinnerMonth.setOnItemSelectedListener(listener);

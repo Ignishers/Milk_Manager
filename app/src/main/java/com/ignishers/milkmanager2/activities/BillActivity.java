@@ -199,7 +199,9 @@ public class BillActivity extends AppCompatActivity {
                 updateVisibility(position);
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
         });
         
         spYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -208,7 +210,9 @@ public class BillActivity extends AppCompatActivity {
                 updateQuarterList();
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
         });
         
         // Initial update
@@ -281,6 +285,9 @@ public class BillActivity extends AppCompatActivity {
                 break;
             case 4: // Date Range
                 layoutDateRange.setVisibility(View.VISIBLE);
+                break;
+            default:
+                // No action needed for unknown types
                 break;
         }
     }

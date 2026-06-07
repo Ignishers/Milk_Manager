@@ -24,6 +24,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestoreWorker extends Worker {
 
+    public static final String PREFS_NAME = "RestorePrefs";
+    public static final String KEY_LAST_ERROR = "last_error";
+
     private static final String TAG = "RestoreWorker";
     private Context context;
 
@@ -88,8 +91,8 @@ public class RestoreWorker extends Worker {
         }
 
         if (allSuccess) {
-            android.content.SharedPreferences prefs = context.getSharedPreferences("RestorePrefs", Context.MODE_PRIVATE);
-            prefs.edit().putString("last_error", "").apply();
+            // Clear previous errors
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putString(KEY_LAST_ERROR, "").apply();
         }
 
         return allSuccess ? Result.success() : Result.retry();

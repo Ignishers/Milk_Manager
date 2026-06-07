@@ -189,13 +189,17 @@ public class ManualEntryBottomSheet extends BottomSheetDialogFragment {
     private void setupInputListener() {
         etValue.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 updatePreview();
             }
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
         });
     }
 

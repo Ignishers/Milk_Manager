@@ -141,7 +141,9 @@ public class MilkEntryFragment extends Fragment {
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                // Do nothing
+            }
         });
 
         // --- Manual Entry Button ---

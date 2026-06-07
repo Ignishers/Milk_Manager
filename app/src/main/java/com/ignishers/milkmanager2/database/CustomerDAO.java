@@ -12,6 +12,14 @@ import java.util.List;
 
 public class CustomerDAO {
 
+    private static final String TABLE_CUSTOMER = "customer";
+    private static final String COL_ROUTE_ID = "route_id_fk";
+    private static final String COL_DEFAULT_QTY = "default_quantity";
+    private static final String COL_DEFAULT_QTY_MORN = "default_qty_morning";
+    private static final String COL_DEFAULT_QTY_EVE = "default_qty_evening";
+    private static final String COL_DUE_BALANCE = "customer_due_balance";
+    private static final String WHERE_CUSTOMER_ID_EQ = "customer_id = ?";
+
     private final SQLiteDatabase db;
     private final Context context;
 
@@ -77,17 +85,17 @@ public class CustomerDAO {
         cv.put("customer_mobile", mobile);
         
         BigDecimal legacyQty = morningQty.add(eveningQty).divide(new BigDecimal("2.0"), java.math.RoundingMode.HALF_UP);
-        cv.put("default_quantity", legacyQty.toPlainString());
-        cv.put("default_qty_morning", morningQty.toPlainString());
-        cv.put("default_qty_evening", eveningQty.toPlainString());
-        cv.put("customer_due_balance", currentDue.toPlainString());
+        cv.put(COL_DEFAULT_QTY, legacyQty.toPlainString());
+        cv.put(COL_DEFAULT_QTY_MORN, morningQty.toPlainString());
+        cv.put(COL_DEFAULT_QTY_EVE, eveningQty.toPlainString());
+        cv.put(COL_DUE_BALANCE, currentDue.toPlainString());
         
         int sortOrder = countCustomersInGroup(routeGroupId);
         cv.put("sort_order", sortOrder);
         if (routeGroupId == null || routeGroupId == 0) {
-            cv.putNull("route_id_fk");
+            cv.putNull(COL_ROUTE_ID);
         } else {
-            cv.put("route_id_fk", routeGroupId);
+            cv.put(COL_ROUTE_ID, routeGroupId);
         }
 
         com.ignishers.milkmanager2.managers.SessionManager session = new com.ignishers.milkmanager2.managers.SessionManager(context);
@@ -97,14 +105,14 @@ public class CustomerDAO {
         cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
         cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
 
-        return db.insert("customer", null, cv);
+        return db.insert(TABLE_CUSTOMER, null, cv);
     }
 
     private int countCustomersInGroup(Long routeGroupId) {
         String where = (routeGroupId == null || routeGroupId == 0)
-                ? "(route_id_fk IS NULL OR route_id_fk = 0)"
-                : "route_id_fk = " + routeGroupId;
-        Cursor c = db.rawQuery("SELECT COUNT(*) FROM customer WHERE " + where, null);
+                ? "(" + COL_ROUTE_ID + " IS NULL OR " + COL_ROUTE_ID + " = 0)"
+                : COL_ROUTE_ID + " = " + routeGroupId;
+        Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_CUSTOMER + " WHERE " + where, null);
         int count = 0;
         if (c.moveToFirst()) count = c.getInt(0);
         c.close();
@@ -119,10 +127,10 @@ public class CustomerDAO {
     public Customer getCustomer(String customer_id) {
         Customer customer = null;
         Cursor c = db.rawQuery(
-            "SELECT customer_id, customer_name, customer_mobile, default_quantity," +
-            " customer_due_balance, route_id_fk, default_qty_morning, default_qty_evening," +
+            "SELECT customer_id, customer_name, customer_mobile, " + COL_DEFAULT_QTY + "," +
+            " " + COL_DUE_BALANCE + ", " + COL_ROUTE_ID + ", " + COL_DEFAULT_QTY_MORN + ", " + COL_DEFAULT_QTY_EVE + "," +
             " sort_order, COALESCE(auto_entry_enabled, 1) as auto_entry_enabled" +
-            " FROM customer WHERE customer_id = ?",
+            " FROM " + TABLE_CUSTOMER + " WHERE " + WHERE_CUSTOMER_ID_EQ,
             new String[]{customer_id});
         if (c.moveToFirst()) {
             customer = new Customer(
@@ -144,11 +152,11 @@ public class CustomerDAO {
         ContentValues cv = new ContentValues();
         cv.put("customer_name", name);
         cv.put("customer_mobile", mobile);
-        cv.put("default_quantity", defaultQty.toPlainString());
-        cv.put("customer_due_balance", currentDue.toPlainString());
+        cv.put(COL_DEFAULT_QTY, defaultQty.toPlainString());
+        cv.put(COL_DUE_BALANCE, currentDue.toPlainString());
         cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
         cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
-        db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});
+        db.update(TABLE_CUSTOMER, cv, WHERE_CUSTOMER_ID_EQ, new String[]{String.valueOf(customerId)});
     }
 
     public void updateCustomerDue(long customerId, BigDecimal amountToAdd) {
@@ -157,7 +165,7 @@ public class CustomerDAO {
         if (c != null) {
             BigDecimal newDue = c.currentDue.add(amountToAdd);
             ContentValues cv = new ContentValues();
-            cv.put("customer_due_balance", newDue.toPlainString());
+            cv.put(COL_DUE_BALANCE, newDue.toPlainString());
             cv.put(DBHelper.COL_SYNC_IS_SYNCED, 0);
             cv.put(DBHelper.COL_SYNC_UPDATED_AT, System.currentTimeMillis());
             db.update("customer", cv, "customer_id = ?", new String[]{String.valueOf(customerId)});

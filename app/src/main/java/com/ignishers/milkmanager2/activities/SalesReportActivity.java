@@ -105,8 +105,8 @@ public class SalesReportActivity extends AppCompatActivity {
                 public void onTabSelected(TabLayout.Tab tab) {
                     updateTabVisibility(tab.getPosition());
                 }
-                @Override public void onTabUnselected(TabLayout.Tab tab) {}
-                @Override public void onTabReselected(TabLayout.Tab tab) {}
+                @Override public void onTabUnselected(TabLayout.Tab tab) { /* Do nothing */ }
+                @Override public void onTabReselected(TabLayout.Tab tab) { /* Do nothing */ }
             });
 
             // Load Data
@@ -220,7 +220,9 @@ public class SalesReportActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
         });
     }
 

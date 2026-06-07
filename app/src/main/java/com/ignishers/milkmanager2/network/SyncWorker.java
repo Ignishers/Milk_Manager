@@ -24,6 +24,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SyncWorker extends Worker {
 
+    public static final String PREFS_NAME = "SyncPrefs";
+    public static final String KEY_LAST_ERROR = "last_error";
+
     private static final String TAG = "SyncWorker";
     private final Context context;
 
@@ -96,16 +99,15 @@ public class SyncWorker extends Worker {
 
         } catch (Exception e) {
             Log.e(TAG, "Sync failed: " + e.getMessage());
-            android.content.SharedPreferences prefs = context.getSharedPreferences("SyncPrefs", android.content.Context.MODE_PRIVATE);
-            prefs.edit().putString("last_error", "Exception: " + e.getMessage()).apply();
+            android.content.SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE);
+            prefs.edit().putString(KEY_LAST_ERROR, "Exception: " + e.getMessage()).apply();
             return Result.retry();
         } finally {
             db.close();
         }
 
         if (allSuccess) {
-            android.content.SharedPreferences prefs = context.getSharedPreferences("SyncPrefs", android.content.Context.MODE_PRIVATE);
-            prefs.edit().putString("last_error", "").apply();
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putString(KEY_LAST_ERROR, "").apply();
         }
 
         return allSuccess ? Result.success() : Result.retry();

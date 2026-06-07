@@ -23,6 +23,10 @@ import com.ignishers.milkmanager2.network.SyncWorker;
 
 public class SyncDiagnosticsActivity extends AppCompatActivity {
 
+    public static final String PREF_LAST_ERROR = "last_error";
+    public static final String PREFS_SYNC = "SyncPrefs";
+    public static final String PREFS_RESTORE = "RestorePrefs";
+
     private TextView tvStatus, tvStatRoutes, tvStatCustomers, tvStatPrices, tvStatTransactions, tvStatPayments, tvLogs;
     private Button btnSyncNow, btnRestoreFromCloud, btnRefreshStats, btnClearLogs;
     private DBHelper dbHelper;
@@ -55,7 +59,7 @@ public class SyncDiagnosticsActivity extends AppCompatActivity {
 
         btnRefreshStats.setOnClickListener(v -> loadStats());
         btnClearLogs.setOnClickListener(v -> {
-            getSharedPreferences("SyncPrefs", Context.MODE_PRIVATE).edit().putString("last_error", "").apply();
+            getSharedPreferences(PREFS_SYNC, Context.MODE_PRIVATE).edit().putString(PREF_LAST_ERROR, "").apply();
             loadLogs();
         });
         
@@ -135,11 +139,11 @@ public class SyncDiagnosticsActivity extends AppCompatActivity {
     }
 
     private void loadLogs() {
-        SharedPreferences prefs = getSharedPreferences("SyncPrefs", Context.MODE_PRIVATE);
-        String err = prefs.getString("last_error", "");
+        SharedPreferences prefs = getSharedPreferences(PREFS_SYNC, Context.MODE_PRIVATE);
+        String err = prefs.getString(PREF_LAST_ERROR, "");
         
-        SharedPreferences restorePrefs = getSharedPreferences("RestorePrefs", Context.MODE_PRIVATE);
-        String restoreErr = restorePrefs.getString("last_error", "");
+        SharedPreferences restorePrefs = getSharedPreferences(PREFS_RESTORE, Context.MODE_PRIVATE);
+        String restoreErr = restorePrefs.getString(PREF_LAST_ERROR, "");
         
         if (err.isEmpty() && restoreErr.isEmpty()) {
             tvLogs.setText("No errors. Cloud connection is healthy.");
