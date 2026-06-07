@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.Material3.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="Cloud Sync Diagnostics"
+            app:titleTextColor="?attr/colorOnPrimary"
+            app:navigationIcon="@drawable/ic_arrow_back_24" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Sync Status Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Current Status"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Idle"
+                        android:layout_marginTop="8dp"
+                        android:textColor="#000000"
+                        android:textSize="14sp" />
+
+                    <Button
+                        android:id="@+id/btnSyncNow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Push Local Data to Cloud (Sync)"
+                        android:layout_marginTop="12dp"/>
+
+                    <Button
+                        android:id="@+id/btnRestoreFromCloud"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Restore Cloud Data to Device"
+                        android:layout_marginTop="8dp"
+                        app:backgroundTint="#FF9800"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Sync Statistics Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Data Sync Progress"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView android:id="@+id/tvStatRoutes" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Routes: 0 / 0 Synced" android:layout_marginBottom="4dp"/>
+                    <TextView android:id="@+id/tvStatCustomers" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Customers: 0 / 0 Synced" android:layout_marginBottom="4dp"/>
+                    <TextView android:id="@+id/tvStatPrices" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Prices: 0 / 0 Synced" android:layout_marginBottom="4dp"/>
+                    <TextView android:id="@+id/tvStatTransactions" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Transactions: 0 / 0 Synced" android:layout_marginBottom="4dp"/>
+                    <TextView android:id="@+id/tvStatPayments" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Payments: 0 / 0 Synced" />
+
+                    <Button
+                        android:id="@+id/btnRefreshStats"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Refresh Stats"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Error Logs Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Supabase Error Logs"
+                        android:textStyle="bold"
+                        android:textColor="#D32F2F"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvLogs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No errors."
+                        android:layout_marginTop="8dp"
+                        android:typeface="monospace"
+                        android:background="#EEEEEE"
+                        android:padding="8dp"
+                        android:textColor="#D32F2F"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/btnClearLogs"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Clear Logs"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

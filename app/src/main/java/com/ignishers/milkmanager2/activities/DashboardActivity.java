@@ -453,8 +453,15 @@ public class DashboardActivity extends AppCompatActivity
             }
             @Override public void onSyncNowClick() {
                 androidx.work.OneTimeWorkRequest syncRequest = new androidx.work.OneTimeWorkRequest.Builder(com.ignishers.milkmanager2.network.SyncWorker.class).build();
-                androidx.work.WorkManager.getInstance(DashboardActivity.this).enqueue(syncRequest);
-                Toast.makeText(DashboardActivity.this, "Sync Triggered in Background!", Toast.LENGTH_SHORT).show();
+                androidx.work.WorkManager.getInstance(DashboardActivity.this).enqueueUniqueWork(
+                        "ManualSync",
+                        androidx.work.ExistingWorkPolicy.REPLACE,
+                        syncRequest
+                );
+                Toast.makeText(DashboardActivity.this, "Sync Triggered! Please wait...", Toast.LENGTH_SHORT).show();
+            }
+            @Override public void onSyncDiagnosticsClick() {
+                startActivity(new Intent(DashboardActivity.this, com.ignishers.milkmanager2.activities.SyncDiagnosticsActivity.class));
             }
             @Override public void onBackupCsvClick() {
                 com.ignishers.milkmanager2.utils.CsvExportManager.exportDatabaseToCsv(DashboardActivity.this, new com.ignishers.milkmanager2.utils.CsvExportManager.ExportCallback() {

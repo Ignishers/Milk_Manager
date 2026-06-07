@@ -87,6 +87,7 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
         View btnSettings = view.findViewById(R.id.btnSettings);
         View btnCloudSync = view.findViewById(R.id.btnCloudSync);
         View btnSyncNow = view.findViewById(R.id.btnSyncNow);
+        View btnSyncDiagnostics = view.findViewById(R.id.btnSyncDiagnostics);
         View btnBackupCsv = view.findViewById(R.id.btnBackupCsv);
 
         btnSales.setOnClickListener(v -> {
@@ -113,6 +114,13 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
             });
         }
 
+        if (btnSyncDiagnostics != null) {
+            btnSyncDiagnostics.setOnClickListener(v -> {
+                if (listener != null) listener.onSyncDiagnosticsClick();
+                dismiss();
+            });
+        }
+
         if (btnBackupCsv != null) {
             btnBackupCsv.setOnClickListener(v -> {
                 if (listener != null) listener.onBackupCsvClick();
@@ -130,6 +138,7 @@ public class MainMenuBottomSheet extends BottomSheetDialogFragment {
         animateItem(btnPrice, 200);
         if (btnCloudSync != null) animateItem(btnCloudSync, 300);
         if (btnSyncNow != null) animateItem(btnSyncNow, 400);
+        if (btnSyncDiagnostics != null) animateItem(btnSyncDiagnostics, 450);
         if (btnBackupCsv != null) animateItem(btnBackupCsv, 500);
         animateItem(btnSettings, 600);
     }

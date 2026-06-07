@@ -141,6 +141,34 @@
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
 
+    <!-- Sync Diagnostics -->
+    <LinearLayout
+        android:id="@+id/btnSyncDiagnostics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_sync"
+            app:tint="#9C27B0"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cloud Sync Diagnostics"
+            android:textSize="16sp"
+            android:textColor="@color/text_primary_light"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
     <!-- Backup CSV -->
     <LinearLayout
         android:id="@+id/btnBackupCsv"
