@@ -64,5 +64,4 @@ MilkManager2 is a comprehensive Android application designed to streamline the d
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 
-Part of Ignishers
-Open-source technology for real-world problems.
+Part of Ignishers | Open-source technology for real-world problems.
